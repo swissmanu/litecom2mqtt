@@ -6,6 +6,14 @@ const envSchema = z.object({
   LITECOM_CONSUMER_API_TOKEN: z.string(),
   HOMEASSISTANT_MQTT_DISCOVERY_PREFIX: z.string(),
   MQTT_BROKER_URL: z.string(),
+  LOG_LEVEL: z.union([
+    z.literal("NOTSET"),
+    z.literal("DEBUG"),
+    z.literal("INFO"),
+    z.literal("WARNING"),
+    z.literal("ERROR"),
+    z.literal("CRITICAL"),
+  ]).default("ERROR"),
 });
 
 const result = envSchema.safeParse(Deno.env.toObject());
