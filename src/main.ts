@@ -1,8 +1,10 @@
-import { LightEntity } from "./homeAssistant/lightEntity.ts";
 import { createMqttClient } from "./createMqttClient.ts";
 import { getZones } from "./getZones.ts";
+import { LightEntity } from "./homeAssistant/lightEntity.ts";
+import { createLitecomMqttMirror } from "./litecomMqttMirror.ts";
 
 const mqttClient = await createMqttClient();
+await createLitecomMqttMirror(mqttClient);
 const zones = await getZones();
 
 for (const { zone } of zones) {
