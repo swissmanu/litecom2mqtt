@@ -1,8 +1,5 @@
 import * as sinon from "https://cdn.skypack.dev/sinon?dts";
-import {
-  assert,
-  assertEquals,
-} from "https://deno.land/std@0.204.0/assert/mod.ts";
+import { assert, assertEquals } from "https://deno.land/std@0.204.0/assert/mod.ts";
 import { getLogger } from "https://deno.land/std@0.204.0/log/mod.ts";
 import { cleanupFakes } from "../util/testing/cleanupFakes.ts";
 import { LightingServiceMQTTHandler } from "./lightingServiceMqttHandler.ts";
@@ -17,8 +14,7 @@ Deno.test("LightingServiceMQTTHandler", async (t) => {
   const handler = new LightingServiceMQTTHandler(
     {
       putLightingServiceByZone: fakes.putLightingServiceByZone,
-      putLightingServiceByZoneAndDevice:
-        fakes.putLightingServiceByZoneAndDevice,
+      putLightingServiceByZoneAndDevice: fakes.putLightingServiceByZoneAndDevice,
     },
     getLogger("test"),
   );

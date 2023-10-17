@@ -35,8 +35,7 @@ export class LightEntity extends AbstractEntity {
       };
     }
     return {
-      command_topic:
-        `${config.LITECOM2MQTT_MQTT_TOPIC_PREFIX}/${this.zone.id}/${this.litecomServiceType}/set`,
+      command_topic: `${config.LITECOM2MQTT_MQTT_TOPIC_PREFIX}/${this.zone.id}/${this.litecomServiceType}/set`,
       brightness_command_topic:
         `${config.LITECOM2MQTT_MQTT_TOPIC_PREFIX}/${this.zone.id}/${this.litecomServiceType}/brightness`,
     };

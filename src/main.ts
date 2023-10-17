@@ -10,8 +10,7 @@ import { log } from "./util/logger.ts";
 const mqttClient = new MqttClient(
   new LightingServiceMQTTHandler({
     putLightingServiceByZone: LightingServiceService.putLightingServiceByZone,
-    putLightingServiceByZoneAndDevice:
-      LightingServiceService.putLightingServiceByZoneAndDevice,
+    putLightingServiceByZoneAndDevice: LightingServiceService.putLightingServiceByZoneAndDevice,
   }, log),
   log,
 );
@@ -19,8 +18,7 @@ await mqttClient.init(config);
 
 await createLitecomMqttMirror(mqttClient);
 
-const { knownZones, knownDevices, zoneIdsByDeviceId } =
-  await getZonesAndDevices();
+const { knownZones, knownDevices, zoneIdsByDeviceId } = await getZonesAndDevices();
 
 for (const { zone } of knownZones) {
   if (

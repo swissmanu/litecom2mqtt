@@ -3,10 +3,8 @@ import type { LightingServiceService } from "../litecom/restClient/index.ts";
 import { Logger } from "../util/logger.ts";
 
 export interface LitecomLightingServiceAdapter {
-  putLightingServiceByZone:
-    typeof LightingServiceService["putLightingServiceByZone"];
-  putLightingServiceByZoneAndDevice:
-    typeof LightingServiceService["putLightingServiceByZoneAndDevice"];
+  putLightingServiceByZone: typeof LightingServiceService["putLightingServiceByZone"];
+  putLightingServiceByZoneAndDevice: typeof LightingServiceService["putLightingServiceByZoneAndDevice"];
 }
 
 export const LightingCommand = z.discriminatedUnion(

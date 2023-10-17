@@ -2,10 +2,7 @@ import { Client } from "https://deno.land/x/mqtt@0.1.2/deno/mod.ts";
 import { Config } from "../util/config.ts";
 import { createAsyncDisposable } from "../util/createDisposable.ts";
 import { log, Logger } from "../util/logger.ts";
-import {
-  LightingCommand,
-  LightingServiceMQTTHandler,
-} from "./lightingServiceMqttHandler.ts";
+import { LightingCommand, LightingServiceMQTTHandler } from "./lightingServiceMqttHandler.ts";
 
 export class MqttClient {
   private client: Client | undefined = undefined;
