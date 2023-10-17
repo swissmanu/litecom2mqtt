@@ -1,4 +1,4 @@
-import { Client } from "https://deno.land/x/mqtt/deno/mod.ts";
+import { Client } from "https://deno.land/x/mqtt@0.1.2/deno/mod.ts";
 import { config } from "../util/config.ts";
 import { LightingServiceService } from "../litecom/restClient/index.ts";
 import { log } from "../util/logger.ts";

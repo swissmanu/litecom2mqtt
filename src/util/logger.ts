@@ -1,9 +1,12 @@
 import {
   getLogger,
   handlers,
+  Logger as Log,
   setup,
 } from "https://deno.land/std@0.204.0/log/mod.ts";
 import { config } from "./config.ts";
+
+export type Logger = Log;
 
 setup({
   handlers: {
