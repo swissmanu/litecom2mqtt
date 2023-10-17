@@ -3,7 +3,7 @@ import {
   handlers,
   setup,
 } from "https://deno.land/std@0.204.0/log/mod.ts";
-import { config } from "../config.ts";
+import { config } from "./config.ts";
 
 setup({
   handlers: {

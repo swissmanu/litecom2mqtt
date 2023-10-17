@@ -6,6 +6,7 @@ const envSchema = z.object({
   LITECOM_CONSUMER_API_TOKEN: z.string(),
   HOMEASSISTANT_MQTT_DISCOVERY_PREFIX: z.string(),
   MQTT_BROKER_URL: z.string(),
+  MQTT_LITECOM_STATE_TOPIC_PREFIX: z.string().default("litecom"),
   LOG_LEVEL: z.union([
     z.literal("NOTSET"),
     z.literal("DEBUG"),

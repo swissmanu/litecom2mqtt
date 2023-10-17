@@ -1,11 +1,15 @@
 import { Client } from "https://deno.land/x/mqtt@0.1.2/deno/mod.ts";
-import { config } from "../config.ts";
-import { Zone } from "../restClient/index.ts";
-import { log } from "../util/logger.ts";
+import { config } from "../../util/config.ts";
+import { Device, Zone } from "../../litecom/restClient/index.ts";
+import { log } from "../../util/logger.ts";
 
 export abstract class AbstractEntity {
   get objectId(): string {
-    return this.zone.id;
+    return AbstractEntity.createObjectId(this.device ?? this.zone);
+  }
+
+  get name(): string {
+    return this.device?.name ?? this.zone.name;
   }
 
   get uniqueId(): string {
@@ -18,11 +22,12 @@ export abstract class AbstractEntity {
     string,
     string | number | boolean
   >;
-  abstract get litecomServiceType(): "lightning";
+  abstract get litecomServiceType(): "lighting";
 
   constructor(
     private readonly mqttClient: Client,
-    private readonly zone: Zone,
+    protected readonly zone: Zone,
+    protected readonly device?: Device,
   ) {
     this.subscribe();
   }
@@ -36,20 +41,24 @@ export abstract class AbstractEntity {
 
   public announce(): Promise<void> {
     const uniqueId = this.uniqueId;
+    const name = this.name;
 
     const device = {
-      name: this.zone.name,
+      name,
       identifiers: uniqueId,
       sw_version: "0.0.1",
       manufacturer: "Zumtobel Lighting GmbH",
       configuration_url: `https://${config.LITECOM_HOST}`,
+      ...(this.device
+        ? { via_device: AbstractEntity.createObjectId(this.zone) }
+        : {}),
     };
 
     const topic =
       `${config.HOMEASSISTANT_MQTT_DISCOVERY_PREFIX}/${this.homeAssistantEntityType}/${uniqueId}/config`;
 
     const payload = {
-      name: this.zone.name,
+      name,
       uniq_id: uniqueId,
       object_id: uniqueId,
       device,
@@ -57,7 +66,7 @@ export abstract class AbstractEntity {
       ...this.homeAssistantEntityConfig,
     };
 
-    log.debug(`Announce Home Assistant device on topic "${topic}"`, {
+    log.debug(`Announce Home Assistant entity on topic "${topic}"`, {
       topic,
       payload,
     });
@@ -66,5 +75,9 @@ export abstract class AbstractEntity {
       JSON.stringify(payload),
       { retain: false },
     );
+  }
+
+  static createObjectId(x: Zone | Device): string {
+    return x.id;
   }
 }

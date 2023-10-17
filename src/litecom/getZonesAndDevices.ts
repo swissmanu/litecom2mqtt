@@ -1,11 +1,13 @@
-import { config } from "./config.ts";
+import { config } from "../util/config.ts";
 import {
+  Device,
+  DevicesService,
   Identifiable,
   OpenAPI,
   Zone,
   ZonesService,
 } from "./restClient/index.ts";
-import { log } from "./util/logger.ts";
+import { log } from "../util/logger.ts";
 
 OpenAPI.BASE = `https://${config.LITECOM_HOST}${OpenAPI.BASE}`;
 OpenAPI.USERNAME = config.LITECOM_CONSUMER_NAME;
@@ -18,9 +20,22 @@ type KnownZone = {
   hasScenes: boolean;
 };
 
-export async function getZones() {
+type KnownDevice = {
+  device: Device;
+  hasLights: boolean;
+};
+
+export async function getZonesAndDevices() {
   const knownZones: KnownZone[] = [];
-  const zones = await ZonesService.getZones();
+  const knownDevices: KnownDevice[] = [];
+  const deviceIdsByZoneId = new Map<string, string[]>();
+  const zoneIdsByDeviceId = new Map<string, string[]>();
+
+  // const zones = await ZonesService.getZones();
+  const zones = [
+    await ZonesService.getZoneById("1b459fde-2354-460d-bc28-3cd1df47c0ed"),
+  ];
+
   log.debug(`Fetched ${zones.length} zones`);
 
   for (const zone of zones) {
@@ -42,6 +57,31 @@ export async function getZones() {
     };
     knownZones.push(knownZone);
 
+    const devices = await DevicesService.getDevicesByZone(zone.id);
+    await delay();
+    for (const device of devices) {
+      const services = await DevicesService.getServicesByZoneAndDevice(
+        zone.id,
+        device.id,
+      );
+      await delay();
+      knownDevices.push({
+        device,
+        hasLights: services.findIndex((s) =>
+          s.type === Identifiable.type.LIGHTING
+        ) !== -1,
+      });
+
+      deviceIdsByZoneId.set(zone.id, [
+        ...(deviceIdsByZoneId.get(zone.id) ?? []),
+        device.id,
+      ]);
+      zoneIdsByDeviceId.set(device.id, [
+        ...(zoneIdsByDeviceId.get(device.id) ?? []),
+        zone.id,
+      ]);
+    }
+
     // if (zone.level === Zone.level.ROOM || zone.level === Zone.level.GROUP) {
     // const devices = await DevicesService.getDevicesByZone(zone.id);
     // await delay()
@@ -59,7 +99,7 @@ export async function getZones() {
     // }
   }
 
-  return knownZones;
+  return { knownZones, knownDevices, deviceIdsByZoneId, zoneIdsByDeviceId };
 }
 
 function delay(ms = 200) {
