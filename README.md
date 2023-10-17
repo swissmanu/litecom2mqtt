@@ -12,16 +12,16 @@
 _In order to run `litecom2mqtt`, all environment variables not stated as
 "optional" must be defined._
 
-| Variable                              | Default Value   | Description                                                  |
-| ------------------------------------- | --------------- | ------------------------------------------------------------ |
-| `MQTT_BROKER_URL`                     |                 | The URL to your MQTT broker.<br />Examples: `mqtt://192.168.1.42:1883`, `mqtt://mosquitto:1883` |
-| `MQTT_TOPIC_PREFIX`                   | `litecom2mqtt`  | Optional. All `litecom2mqtt` MQTT topics are prefixed using this string. |
-| `MQTT_LITECOM_STATE_TOPIC_PREFIX`     | `litecom`       | Optional. The topic prefix used by your Litecom CCD to publish state information. |
-| `HOMEASSISTANT_MQTT_DISCOVERY_PREFIX` | `homeassistant` | Optional. `litecom2mqtt` will announce devices, zones, etc. to Home Assistant within this topic prefix. |
-| `LITECOM_HOST`                        |                 | The host where your Litecom CCD can be reached.<br />Examples: `192.168.1.50`,  `litecom.yourdomain.tld` |
-| `LITECOM_CONSUMER_NAME`               |                 |                                                              |
-| `LITECOM_CONSUMER_API_KEY`            |                 |                                                              |
-| `LOG_LEVEL`                           | `ERROR`         | Optional. One of `DEBUG`, `INFO`, `WARNING`, `ERROR`, or `CRITICAL` to control log verbosity. |
+| Variable                                                 | Default Value   | Description                                                  |
+| -------------------------------------------------------- | --------------- | ------------------------------------------------------------ |
+| `LITECOM2MQTT_MQTT_BROKER_URL`                           |                 | The URL to your MQTT broker.<br />Examples: `mqtt://192.168.1.42:1883`, `mqtt://mosquitto:1883` |
+| `LITECOM2MQTT_MQTT_TOPIC_PREFIX`                         | `litecom2mqtt`  | Optional. All `litecom2mqtt` MQTT topics are prefixed using this string. |
+| `LITECOM2MQTT_LOG_LEVEL`                                 | `ERROR`         | Optional. One of `DEBUG`, `INFO`, `WARNING`, `ERROR`, or `CRITICAL` to control log verbosity. |
+| `LITECOM2MQTT_LITECOM_HOST`                              |                 | The host where your Litecom CCD can be reached.<br />Examples: `192.168.1.50`,  `litecom.yourdomain.tld` |
+| `LITECOM2MQTT_LITECOM_CONSUMER_NAME`                     |                 |                                                              |
+| `LITECOM2MQTT_LITECOM_CONSUMER_API_KEY`                  |                 |                                                              |
+| `LITECOM2MQTT_LITECOM_STATE_MQTT_TOPIC_PREFIX`           | `litecom`       | Optional. The topic prefix used by your Litecom CCD to publish state information. |
+| `LITECOM2MQTT_HOMEASSISTANT_DISCOVERY_MQTT_TOPIC_PREFIX` | `homeassistant` | Optional. `litecom2mqtt` will announce devices, zones, etc. to Home Assistant within this topic prefix. |
 
 ## System Interactions
 

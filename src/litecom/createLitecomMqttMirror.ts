@@ -11,9 +11,9 @@ export async function createLitecomMqttMirror(
   log.debug("Set up Litecom MQTT Mirror");
 
   const litecomMqttClient = new Client({
-    url: `mqtts://${config.LITECOM_HOST}:8883`,
-    username: config.LITECOM_CONSUMER_NAME,
-    password: config.LITECOM_CONSUMER_API_TOKEN,
+    url: `mqtts://${config.LITECOM2MQTT_LITECOM_HOST}:8883`,
+    username: config.LITECOM2MQTT_LITECOM_CONSUMER_NAME,
+    password: config.LITECOM2MQTT_LITECOM_CONSUMER_API_TOKEN,
   });
 
   litecomMqttClient.on("message", (topic: string, payload: BufferSource) => {

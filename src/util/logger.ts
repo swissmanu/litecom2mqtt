@@ -15,7 +15,7 @@ setup({
   loggers: {
     litecom2mqtt: {
       handlers: ["console"],
-      level: config.LOG_LEVEL,
+      level: config.LITECOM2MQTT_LOG_LEVEL,
     },
   },
 });

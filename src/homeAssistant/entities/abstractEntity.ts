@@ -48,14 +48,12 @@ export abstract class AbstractEntity {
       identifiers: uniqueId,
       sw_version: "0.0.1",
       manufacturer: "Zumtobel Lighting GmbH",
-      configuration_url: `https://${config.LITECOM_HOST}`,
-      ...(this.device
-        ? { via_device: AbstractEntity.createObjectId(this.zone) }
-        : {}),
+      configuration_url: `https://${config.LITECOM2MQTT_LITECOM_HOST}`,
+      ...(this.device ? { via_device: AbstractEntity.createObjectId(this.zone) } : {}),
     };
 
     const topic =
-      `${config.HOMEASSISTANT_MQTT_DISCOVERY_PREFIX}/${this.homeAssistantEntityType}/${uniqueId}/config`;
+      `${config.LITECOM2MQTT_HOMEASSISTANT_DISCOVERY_MQTT_TOPIC_PREFIX}/${this.homeAssistantEntityType}/${uniqueId}/config`;
 
     const payload = {
       name,

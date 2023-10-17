@@ -20,16 +20,16 @@ export class MqttClient {
 
     // PREFIX/ZONE_ID/devices/DEVICE_ID/SERVICE_TYPE/COMMAND_TOPIC
     const deviceTopicRegex = new RegExp(
-      `^${config.MQTT_TOPIC_PREFIX}\/(.*)\/devices\/(.*)\/(.*)\/(.*)$`,
+      `^${config.LITECOM2MQTT_MQTT_TOPIC_PREFIX}\/(.*)\/devices\/(.*)\/(.*)\/(.*)$`,
     );
 
     // PREFIX/ZONE_ID/SERVICE_TYPE/COMMAND_TOPIC
     const zoneTopicRegex = new RegExp(
-      `^${config.MQTT_TOPIC_PREFIX}\/(.*)\/(.*)\/(.*)$`,
+      `^${config.LITECOM2MQTT_MQTT_TOPIC_PREFIX}\/(.*)\/(.*)\/(.*)$`,
     );
 
     this.client = new Client({
-      url: config.MQTT_BROKER_URL,
+      url: config.LITECOM2MQTT_MQTT_BROKER_URL,
     });
     await this.client.connect();
 

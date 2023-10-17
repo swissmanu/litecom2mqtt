@@ -1,17 +1,10 @@
 import { config } from "../util/config.ts";
-import {
-  Device,
-  DevicesService,
-  Identifiable,
-  OpenAPI,
-  Zone,
-  ZonesService,
-} from "./restClient/index.ts";
+import { Device, DevicesService, Identifiable, OpenAPI, Zone, ZonesService } from "./restClient/index.ts";
 import { log } from "../util/logger.ts";
 
-OpenAPI.BASE = `https://${config.LITECOM_HOST}${OpenAPI.BASE}`;
-OpenAPI.USERNAME = config.LITECOM_CONSUMER_NAME;
-OpenAPI.TOKEN = config.LITECOM_CONSUMER_API_TOKEN;
+OpenAPI.BASE = `https://${config.LITECOM2MQTT_LITECOM_HOST}${OpenAPI.BASE}`;
+OpenAPI.USERNAME = config.LITECOM2MQTT_LITECOM_CONSUMER_NAME;
+OpenAPI.TOKEN = config.LITECOM2MQTT_LITECOM_CONSUMER_API_TOKEN;
 
 type KnownZone = {
   zone: Zone;
@@ -47,13 +40,9 @@ export async function getZonesAndDevices() {
 
     const knownZone: KnownZone = {
       zone,
-      hasLights: services.findIndex((s) =>
-        s.type === Identifiable.type.LIGHTING
-      ) !== -1,
-      hasBlinds:
-        services.findIndex((s) => s.type === Identifiable.type.BLIND) !== -1,
-      hasScenes:
-        services.findIndex((s) => s.type === Identifiable.type.SCENE) !== -1,
+      hasLights: services.findIndex((s) => s.type === Identifiable.type.LIGHTING) !== -1,
+      hasBlinds: services.findIndex((s) => s.type === Identifiable.type.BLIND) !== -1,
+      hasScenes: services.findIndex((s) => s.type === Identifiable.type.SCENE) !== -1,
     };
     knownZones.push(knownZone);
 
@@ -67,9 +56,7 @@ export async function getZonesAndDevices() {
       await delay();
       knownDevices.push({
         device,
-        hasLights: services.findIndex((s) =>
-          s.type === Identifiable.type.LIGHTING
-        ) !== -1,
+        hasLights: services.findIndex((s) => s.type === Identifiable.type.LIGHTING) !== -1,
       });
 
       deviceIdsByZoneId.set(zone.id, [

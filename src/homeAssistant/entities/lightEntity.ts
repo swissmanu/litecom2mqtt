@@ -29,16 +29,16 @@ export class LightEntity extends AbstractEntity {
     if (this.device) {
       return {
         command_topic:
-          `${config.MQTT_TOPIC_PREFIX}/${this.zone.id}/devices/${this.objectId}/${this.litecomServiceType}/set`,
+          `${config.LITECOM2MQTT_MQTT_TOPIC_PREFIX}/${this.zone.id}/devices/${this.objectId}/${this.litecomServiceType}/set`,
         brightness_command_topic:
-          `${config.MQTT_TOPIC_PREFIX}/${this.zone.id}/devices/${this.objectId}/${this.litecomServiceType}/brightness`,
+          `${config.LITECOM2MQTT_MQTT_TOPIC_PREFIX}/${this.zone.id}/devices/${this.objectId}/${this.litecomServiceType}/brightness`,
       };
     }
     return {
       command_topic:
-        `${config.MQTT_TOPIC_PREFIX}/${this.zone.id}/${this.litecomServiceType}/set`,
+        `${config.LITECOM2MQTT_MQTT_TOPIC_PREFIX}/${this.zone.id}/${this.litecomServiceType}/set`,
       brightness_command_topic:
-        `${config.MQTT_TOPIC_PREFIX}/${this.zone.id}/${this.litecomServiceType}/brightness`,
+        `${config.LITECOM2MQTT_MQTT_TOPIC_PREFIX}/${this.zone.id}/${this.litecomServiceType}/brightness`,
     };
   }
 
@@ -49,10 +49,10 @@ export class LightEntity extends AbstractEntity {
       return {
         ...shared,
         state_topic:
-          `${config.MQTT_LITECOM_STATE_TOPIC_PREFIX}/zones/${this.zone.id}/devices/${this.device.id}/services/${this.litecomServiceType}/intensity`,
+          `${config.LITECOM2MQTT_MQTT_LITECOM_STATE_TOPIC_PREFIX}/zones/${this.zone.id}/devices/${this.device.id}/services/${this.litecomServiceType}/intensity`,
         state_value_template: `{{ 'OFF' if (value | int) == 0 else 'ON' }}`,
         brightness_state_topic:
-          `${config.MQTT_LITECOM_STATE_TOPIC_PREFIX}/zones/${this.zone.id}/devices/${this.device.id}/services/${this.litecomServiceType}/intensity`,
+          `${config.LITECOM2MQTT_MQTT_LITECOM_STATE_TOPIC_PREFIX}/zones/${this.zone.id}/devices/${this.device.id}/services/${this.litecomServiceType}/intensity`,
         brightness_value_template: `{{ value | int }}`,
       };
     }
@@ -60,10 +60,10 @@ export class LightEntity extends AbstractEntity {
     return {
       ...shared,
       state_topic:
-        `${config.MQTT_LITECOM_STATE_TOPIC_PREFIX}/zones/${this.zone.id}/services/${this.litecomServiceType}/intensity`,
+        `${config.LITECOM2MQTT_MQTT_LITECOM_STATE_TOPIC_PREFIX}/zones/${this.zone.id}/services/${this.litecomServiceType}/intensity`,
       state_value_template: `{{ 'OFF' if (value | int) == 0 else 'ON' }}`,
       brightness_state_topic:
-        `${config.MQTT_LITECOM_STATE_TOPIC_PREFIX}/zones/${this.zone.id}/services/${this.litecomServiceType}/intensity`,
+        `${config.LITECOM2MQTT_MQTT_LITECOM_STATE_TOPIC_PREFIX}/zones/${this.zone.id}/services/${this.litecomServiceType}/intensity`,
       brightness_value_template: `{{ value | int }}`,
     };
   }

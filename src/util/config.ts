@@ -1,14 +1,7 @@
 import { z } from "https://deno.land/x/zod/mod.ts";
 
 const Config = z.object({
-  LITECOM_HOST: z.string(),
-  LITECOM_CONSUMER_NAME: z.string(),
-  LITECOM_CONSUMER_API_TOKEN: z.string(),
-  HOMEASSISTANT_MQTT_DISCOVERY_PREFIX: z.string().default("homeassistant"),
-  MQTT_BROKER_URL: z.string(),
-  MQTT_LITECOM_STATE_TOPIC_PREFIX: z.string().default("litecom"),
-  MQTT_TOPIC_PREFIX: z.string().default("litecom2mqtt"),
-  LOG_LEVEL: z.union([
+  LITECOM2MQTT_LOG_LEVEL: z.union([
     z.literal("NOTSET"),
     z.literal("DEBUG"),
     z.literal("INFO"),
@@ -16,6 +9,15 @@ const Config = z.object({
     z.literal("ERROR"),
     z.literal("CRITICAL"),
   ]).default("ERROR"),
+  LITECOM2MQTT_MQTT_BROKER_URL: z.string(),
+  LITECOM2MQTT_MQTT_TOPIC_PREFIX: z.string().default("litecom2mqtt"),
+  LITECOM2MQTT_LITECOM_HOST: z.string(),
+  LITECOM2MQTT_LITECOM_CONSUMER_NAME: z.string(),
+  LITECOM2MQTT_LITECOM_CONSUMER_API_TOKEN: z.string(),
+  LITECOM2MQTT_LITECOM_STATE_MQTT_TOPIC_PREFIX: z.string().default("litecom"),
+  LITECOM2MQTT_HOMEASSISTANT_DISCOVERY_MQTT_TOPIC_PREFIX: z.string().default(
+    "homeassistant",
+  ),
 });
 export type Config = z.infer<typeof Config>;
 

@@ -1,5 +1,6 @@
 {
     "fmt": {
+        "lineWidth": 120,
         "include": ["src"],
         "exclude": ["src/litecom/restClient"]
     },
