@@ -1,7 +1,53 @@
 # litecom2mqtt
 
-## Update OpenAPI Client
+> Make Zumtobel Litecom CCD fully accessible through MQTT and discoverable by
+> Home Assistant.
+
+**🚧 This Project is Work In Progress 🚧**
+
+## Usage
+
+### Environment Variables
+
+_In order to run `litecom2mqtt`, all environment variables not stated as
+"optional" must be defined._
+
+| Variable                              | Default Value   | Description                                                                                   |
+| ------------------------------------- | --------------- | --------------------------------------------------------------------------------------------- |
+| `MQTT_BROKER_URL`                     |                 |                                                                                               |
+| `MQTT_LITECOM_STATE_TOPIC_PREFIX`     | `litecom`       | Optional.                                                                                     |
+| `HOMEASSISTANT_MQTT_DISCOVERY_PREFIX` | `homeassistant` | Optional.                                                                                     |
+| `LITECOM_HOST`                        |                 |                                                                                               |
+| `LITECOM_CONSUMER_NAME`               |                 |                                                                                               |
+| `LITECOM_CONSUMER_API_KEY`            |                 |                                                                                               |
+| `LOG_LEVEL`                           | `ERROR`         | Optional. One of `DEBUG`, `INFO`, `WARNING`, `ERROR`, or `CRITICAL` to control log verbosity. |
+
+## System Interactions
+
+![Interactions between litecom2mqtt, Litecom CCD, a MQTT broker, and Home Assistant.](./docs/system.drawio.svg)
+
+## Development
+
+`litecom2mqtt` is written in [TypeScript](https://www.typescriptlang.org/) for
+[deno](https://deno.com/). You get the best developer experience with
+[vscode](https://code.visualstudio.com/) and a
+[devcontainer](https://containers.dev/); a
+[container configuration](./.devcontainer) is present.
+
+### Update Litecom REST API Client
 
 https://www.npmjs.com/package/openapi-typescript-codegen
 
-Add `.ts` file extension to all import paths.
+1. Download the OpenAPI spec from the Litecom CCD (`https://ADDRESS/docs/rest/`)
+   and place it in the projects root as `litecom-openapi.yml`
+
+2. Build the generators Docker image locally, then:
+
+   ```shell
+   docker run -v ./:/data openapi-typescript-codegen --input /data/litecom-openapi.yaml --output /data/src/litecom/restClient
+   ```
+
+3. Add the `.ts` file extension to all import statements in all files of the
+   generated clients. deno needs this.
+
+4. Done.
