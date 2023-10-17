@@ -1,6 +1,6 @@
 import { z } from "https://deno.land/x/zod/mod.ts";
 
-const envSchema = z.object({
+const Config = z.object({
   LITECOM_HOST: z.string(),
   LITECOM_CONSUMER_NAME: z.string(),
   LITECOM_CONSUMER_API_TOKEN: z.string(),
@@ -16,8 +16,9 @@ const envSchema = z.object({
     z.literal("CRITICAL"),
   ]).default("ERROR"),
 });
+export type Config = z.infer<typeof Config>;
 
-const result = envSchema.safeParse(Deno.env.toObject());
+const result = Config.safeParse(Deno.env.toObject());
 if (!result.success) {
   throw new Error(`Invalid Configuration. ${result.error}`);
 }
