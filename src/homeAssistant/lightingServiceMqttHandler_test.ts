@@ -1,4 +1,4 @@
-import * as sinon from "https://cdn.skypack.dev/sinon";
+import * as sinon from "https://cdn.skypack.dev/sinon?dts";
 import {
   assert,
   assertEquals,
