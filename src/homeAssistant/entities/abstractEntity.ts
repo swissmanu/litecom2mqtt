@@ -1,7 +1,7 @@
-import { Client } from "https://deno.land/x/mqtt@0.1.2/deno/mod.ts";
-import { config } from "../../util/config.ts";
 import { Device, Zone } from "../../litecom/restClient/index.ts";
+import { config } from "../../util/config.ts";
 import { log } from "../../util/logger.ts";
+import { MqttClient } from "../mqttClient.ts";
 
 export abstract class AbstractEntity {
   get objectId(): string {
@@ -25,7 +25,7 @@ export abstract class AbstractEntity {
   abstract get litecomServiceType(): "lighting";
 
   constructor(
-    private readonly mqttClient: Client,
+    private readonly mqttClient: MqttClient,
     protected readonly zone: Zone,
     protected readonly device?: Device,
   ) {

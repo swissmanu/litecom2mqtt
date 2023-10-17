@@ -1,10 +1,24 @@
-import { createMqttClient } from "./homeAssistant/createMqttClient.ts";
+import { MqttClient } from "./homeAssistant/mqttClient.ts";
 import { LightEntity } from "./homeAssistant/entities/lightEntity.ts";
+import { LightingServiceMQTTHandler } from "./homeAssistant/lightingServiceMqttHandler.ts";
 import { createLitecomMqttMirror } from "./litecom/createLitecomMqttMirror.ts";
 import { getZonesAndDevices } from "./litecom/getZonesAndDevices.ts";
+import { LightingServiceService } from "./litecom/restClient/index.ts";
+import { config } from "./util/config.ts";
+import { log } from "./util/logger.ts";
 
-const mqttClient = await createMqttClient();
+const mqttClient = new MqttClient(
+  new LightingServiceMQTTHandler({
+    putLightingServiceByZone: LightingServiceService.putLightingServiceByZone,
+    putLightingServiceByZoneAndDevice:
+      LightingServiceService.putLightingServiceByZoneAndDevice,
+  }, log),
+  log,
+);
+await mqttClient.init(config);
+
 await createLitecomMqttMirror(mqttClient);
+
 const { knownZones, knownDevices, zoneIdsByDeviceId } =
   await getZonesAndDevices();
 

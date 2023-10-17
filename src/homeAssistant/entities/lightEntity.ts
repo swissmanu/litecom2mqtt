@@ -1,6 +1,6 @@
-import { Client } from "https://deno.land/x/mqtt@0.1.2/deno/mod.ts";
-import { config } from "../../util/config.ts";
 import { Device, Zone } from "../../litecom/restClient/index.ts";
+import { config } from "../../util/config.ts";
+import { MqttClient } from "../mqttClient.ts";
 import { AbstractEntity } from "./abstractEntity.ts";
 
 /**
@@ -8,7 +8,7 @@ import { AbstractEntity } from "./abstractEntity.ts";
  */
 export class LightEntity extends AbstractEntity {
   constructor(
-    mqttClient: Client,
+    mqttClient: MqttClient,
     zone: Zone,
     device?: Device,
   ) {

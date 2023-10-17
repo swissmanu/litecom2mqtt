@@ -1,9 +1,10 @@
 import { Client } from "https://deno.land/x/mqtt@0.1.2/deno/mod.ts";
+import { MqttClient } from "../homeAssistant/mqttClient.ts";
 import { config } from "../util/config.ts";
 import { log } from "../util/logger.ts";
 
 export async function createLitecomMqttMirror(
-  target: Client,
+  target: MqttClient,
   subscriptionTopic = "zones/#",
   topicFilterPrefix = "zones/",
 ) {
