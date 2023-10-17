@@ -1,3 +1,4 @@
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 import type { LightingServiceService } from "../litecom/restClient/index.ts";
 import { Logger } from "../util/logger.ts";
 
@@ -8,15 +9,20 @@ export interface LitecomLightingServiceAdapter {
     typeof LightingServiceService["putLightingServiceByZoneAndDevice"];
 }
 
-export type LightingCommand = SetCommand | BrightnessCommand;
-type SetCommand = {
-  command: "set";
-  payload: "ON" | "OFF";
-};
-type BrightnessCommand = {
-  command: "brightness";
-  payload: number;
-};
+export const LightingCommand = z.discriminatedUnion(
+  "command",
+  [
+    z.object({
+      command: z.literal("set"),
+      payload: z.union([z.literal("ON"), z.literal("OFF")]),
+    }),
+    z.object({
+      command: z.literal("brightness"),
+      payload: z.string().transform((v) => Number.parseInt(v, 10)),
+    }),
+  ],
+);
+type LightingCommand = z.infer<typeof LightingCommand>;
 
 export class LightingServiceMQTTHandler {
   constructor(
