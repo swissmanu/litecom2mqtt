@@ -1,11 +1,11 @@
 import { Client } from "https://deno.land/x/mqtt@0.1.2/deno/mod.ts";
 import { Config } from "../util/config.ts";
+import { createAsyncDisposable } from "../util/createDisposable.ts";
 import { log, Logger } from "../util/logger.ts";
 import {
   LightingCommand,
   LightingServiceMQTTHandler,
 } from "./lightingServiceMqttHandler.ts";
-import { createAsyncDisposable } from "../util/createDisposable.ts";
 
 export class MqttClient {
   private client: Client | undefined = undefined;
@@ -17,6 +17,17 @@ export class MqttClient {
 
   async init(config: Config): Promise<AsyncDisposable> {
     const decoder = new TextDecoder();
+
+    // PREFIX/ZONE_ID/devices/DEVICE_ID/SERVICE_TYPE/COMMAND_TOPIC
+    const deviceTopicRegex = new RegExp(
+      `^${config.MQTT_TOPIC_PREFIX}\/(.*)\/devices\/(.*)\/(.*)\/(.*)$`,
+    );
+
+    // PREFIX/ZONE_ID/SERVICE_TYPE/COMMAND_TOPIC
+    const zoneTopicRegex = new RegExp(
+      `^${config.MQTT_TOPIC_PREFIX}\/(.*)\/(.*)\/(.*)$`,
+    );
+
     this.client = new Client({
       url: config.MQTT_BROKER_URL,
     });
@@ -25,13 +36,7 @@ export class MqttClient {
     this.client.on("message", (topic: string, payloadBuffer: BufferSource) => {
       const payload = decoder.decode(payloadBuffer);
 
-      // PREFIX/ZONE_ID/devices/DEVICE_ID/SERVICE_TYPE/COMMAND_TOPIC
-      // litecom2mqtt/ZONE_ID/devices/DEVICE_ID/SERVICE_TYPE/COMMAND_TOPIC
-      // litecom2mqtt/ZONE_ID/devices/DEVICE_ID/lighting/set
-
-      const match = topic.match(
-        /^litecom2mqtt\/(.*)\/devices\/(.*)\/(.*)\/(.*)$/,
-      );
+      const match = topic.match(deviceTopicRegex);
       if (match) {
         const [, zoneId, deviceId, serviceType, command] = match;
         switch (serviceType) {
@@ -54,12 +59,10 @@ export class MqttClient {
               },
             );
         }
+        return;
       }
 
-      // PREFIX/ZONE_ID/SERVICE_TYPE/COMMAND_TOPIC
-      // litecom2mqtt/ZONE_ID/SERVICE_TYPE/COMMAND_TOPIC
-      // litecom2mqtt/ZONE_ID/lighting/set
-      const match1 = topic.match(/^litecom2mqtt\/(.*)\/(.*)\/(.*)$/);
+      const match1 = topic.match(zoneTopicRegex);
       if (match1) {
         const [, zoneId, serviceType, command] = match1;
         switch (serviceType) {
@@ -83,6 +86,7 @@ export class MqttClient {
               },
             );
         }
+        return;
       }
     });
 

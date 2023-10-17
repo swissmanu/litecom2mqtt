@@ -7,6 +7,7 @@ const Config = z.object({
   HOMEASSISTANT_MQTT_DISCOVERY_PREFIX: z.string().default("homeassistant"),
   MQTT_BROKER_URL: z.string(),
   MQTT_LITECOM_STATE_TOPIC_PREFIX: z.string().default("litecom"),
+  MQTT_TOPIC_PREFIX: z.string().default("litecom2mqtt"),
   LOG_LEVEL: z.union([
     z.literal("NOTSET"),
     z.literal("DEBUG"),

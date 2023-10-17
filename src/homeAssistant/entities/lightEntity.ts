@@ -29,16 +29,16 @@ export class LightEntity extends AbstractEntity {
     if (this.device) {
       return {
         command_topic:
-          `litecom2mqtt/${this.zone.id}/devices/${this.objectId}/${this.litecomServiceType}/set`,
+          `${config.MQTT_TOPIC_PREFIX}/${this.zone.id}/devices/${this.objectId}/${this.litecomServiceType}/set`,
         brightness_command_topic:
-          `litecom2mqtt/${this.zone.id}/devices/${this.objectId}/${this.litecomServiceType}/brightness`,
+          `${config.MQTT_TOPIC_PREFIX}/${this.zone.id}/devices/${this.objectId}/${this.litecomServiceType}/brightness`,
       };
     }
     return {
       command_topic:
-        `litecom2mqtt/${this.zone.id}/${this.litecomServiceType}/set`,
+        `${config.MQTT_TOPIC_PREFIX}/${this.zone.id}/${this.litecomServiceType}/set`,
       brightness_command_topic:
-        `litecom2mqtt/${this.zone.id}/${this.litecomServiceType}/brightness`,
+        `${config.MQTT_TOPIC_PREFIX}/${this.zone.id}/${this.litecomServiceType}/brightness`,
     };
   }
 
