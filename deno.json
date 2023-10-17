@@ -1,0 +1,10 @@
+{
+    "fmt": {
+        "include": ["src"],
+        "exclude": ["src/litecom/restClient"]
+    },
+    "lint": {
+        "include": ["src"],
+        "exclude": ["src/litecom/restClient"]
+    }
+}
