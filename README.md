@@ -7,10 +7,10 @@
 
 ## Usage
 
-### Environment Variables
+### Configuration
 
-_In order to run `litecom2mqtt`, all environment variables not declared as
-"optional" must be defined._
+`litecom2mqtt` is configured using environment variables. All environment variables not declared as
+"optional" must be defined.
 
 | Variable                                                 | Description                                                  |
 | -------------------------------------------------------- | ------------------------------------------------------------ |
@@ -27,9 +27,13 @@ _In order to run `litecom2mqtt`, all environment variables not declared as
 | `LITECOM2MQTT_HOMEASSISTANT_ANNOUNCE_ROOMS` | Optional. If `true`, Litecom rooms and their services are announced to Home Assistant.<br />Default value: `false` |
 | `LITECOM2MQTT_HOMEASSISTANT_ANNOUNCE_ZONES` | Optional. If `true`, Litecom zones and their services are announced to Home Assistant.<br />Default value: `false` |
 
-## System Interactions
+## System Details
 
 ![Interactions between litecom2mqtt, Litecom CCD, a MQTT broker, and Home Assistant.](./docs/system.drawio.svg)
+
+## Caveats
+
+- When setting a value of a device explicitly, Litecom does not propagate that value to its parent hierarchy (i.e., groups, rooms, and zones.).
 
 ## Development
 
