@@ -1,8 +1,8 @@
-import { MqttClient } from "./homeAssistant/mqttClient.ts";
 import { LightEntity } from "./homeAssistant/entities/lightEntity.ts";
 import { LightingServiceMQTTHandler } from "./homeAssistant/lightingServiceMqttHandler.ts";
+import { MqttClient } from "./homeAssistant/mqttClient.ts";
 import { createLitecomMqttMirror } from "./litecom/createLitecomMqttMirror.ts";
-import { getZonesAndDevices } from "./litecom/getZonesAndDevices.ts";
+import { interrogateLitecomSystem } from "./litecom/interrogateLitecomSystem.ts";
 import { LightingServiceService } from "./litecom/restClient/index.ts";
 import { config } from "./util/config.ts";
 import { log } from "./util/logger.ts";
@@ -18,9 +18,9 @@ await mqttClient.init(config);
 
 await createLitecomMqttMirror(mqttClient);
 
-const { knownZones, knownDevices, zoneIdsByDeviceId } = await getZonesAndDevices();
+const { groups, devices, zoneIdsByDeviceId, zoneById } = await interrogateLitecomSystem(config);
 
-for (const { zone } of knownZones) {
+for (const { zone } of groups) {
   if (
     // zone.name === "Pendel Essen" ||
     // zone.name === "Profil Wohnen" ||
@@ -31,13 +31,13 @@ for (const { zone } of knownZones) {
   }
 }
 
-for (const { device } of knownDevices) {
+for (const { device } of devices) {
   if (device.id === "ca672328-6263-4b3f-a510-fd8bc620afd9") { // Profil Büro LED Strip
     const zoneIds = zoneIdsByDeviceId.get(device.id);
     if (zoneIds && zoneIds.length > 0) {
-      const zone = knownZones.find(({ zone: { id } }) => id === zoneIds[0]);
+      const zone = zoneById.get(zoneIds[0]);
       if (zone) {
-        const entity = new LightEntity(mqttClient, zone.zone, device);
+        const entity = new LightEntity(mqttClient, zone, device);
         await entity.announce();
       }
     }

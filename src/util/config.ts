@@ -18,8 +18,16 @@ const Config = z.object({
   LITECOM2MQTT_HOMEASSISTANT_DISCOVERY_MQTT_TOPIC_PREFIX: z.string().default(
     "homeassistant",
   ),
+  LITECOM2MQTT_HOMEASSISTANT_ANNOUNCE_DEVICES: z.string().optional().transform(stringToBoolean),
+  LITECOM2MQTT_HOMEASSISTANT_ANNOUNCE_GROUPS: z.string().optional().transform(stringToBoolean),
+  LITECOM2MQTT_HOMEASSISTANT_ANNOUNCE_ROOMS: z.string().optional().transform(stringToBoolean),
+  LITECOM2MQTT_HOMEASSISTANT_ANNOUNCE_ZONES: z.string().optional().transform(stringToBoolean),
 });
 export type Config = z.infer<typeof Config>;
+
+function stringToBoolean(x: string | undefined): boolean {
+  return x === "true";
+}
 
 const result = Config.safeParse(Deno.env.toObject());
 if (!result.success) {
