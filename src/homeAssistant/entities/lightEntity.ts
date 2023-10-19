@@ -1,3 +1,4 @@
+import { ZoneWithoutAvailableServices } from "../../litecom/interrogateLitecomSystem.ts";
 import { Device, Zone } from "../../litecom/restClient/index.ts";
 import { config } from "../../util/config.ts";
 import { MqttClient } from "../mqttClient.ts";
@@ -10,9 +11,10 @@ export class LightEntity extends AbstractEntity {
   constructor(
     mqttClient: MqttClient,
     zone: Zone,
+    parentZones: ReadonlyArray<ZoneWithoutAvailableServices>,
     device?: Device,
   ) {
-    super(mqttClient, zone, device);
+    super(mqttClient, zone, parentZones, device);
   }
 
   public static readonly LitecomServiceType = "lighting";

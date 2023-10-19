@@ -8,12 +8,16 @@ type AvailableServices = {
   scenes: boolean;
 };
 
-type Zone = AvailableServices & {
+type Zone = AvailableServices & ZoneWithoutAvailableServices;
+
+export type ZoneWithoutAvailableServices = {
   zone: Litecom.Zone;
+  parentZoneId?: string;
 };
 
 type Device = AvailableServices & {
   device: Litecom.Device;
+  parentZoneId?: string;
 };
 
 type LitecomSystemInformation = {
@@ -46,7 +50,7 @@ type LitecomSystemInformation = {
   /**
    * Contains all known `Zone`s, accessible by their identifier.
    */
-  zoneById: ReadonlyMap<string, Litecom.Zone>;
+  zoneById: ReadonlyMap<string, ZoneWithoutAvailableServices>;
 };
 
 export async function interrogateLitecomSystem(config: Config): Promise<LitecomSystemInformation> {
@@ -55,7 +59,16 @@ export async function interrogateLitecomSystem(config: Config): Promise<LitecomS
   const groups: Zone[] = [];
   const devices: Device[] = [];
   const zoneIdsByDeviceId: Map<string, string[]> = new Map();
-  const zoneById: Map<string, Litecom.Zone> = new Map();
+  const zoneById: Map<string, ZoneWithoutAvailableServices> = new Map();
+  const missingParentZoneIds: Set<string> = new Set();
+
+  function getAndHandleParentZoneId(links: Litecom.Link[]) {
+    const parentId = extractParentIdFromLinks(links);
+    if (parentId && !zoneById.has(parentId)) {
+      missingParentZoneIds.add(parentId);
+    }
+    return parentId;
+  }
 
   if (
     !config.LITECOM2MQTT_HOMEASSISTANT_ANNOUNCE_ZONES &&
@@ -88,7 +101,8 @@ export async function interrogateLitecomSystem(config: Config): Promise<LitecomS
   log.debug(`Fetched ${systemZones.length} zones from Litecom.`);
 
   for (const systemZone of systemZones) {
-    zoneById.set(systemZone.id, systemZone);
+    const parentZoneId = getAndHandleParentZoneId(systemZone.links);
+    zoneById.set(systemZone.id, { zone: systemZone, parentZoneId: parentZoneId });
 
     if (
       (systemZone.level === Litecom.Zone.level.ZONE && config.LITECOM2MQTT_HOMEASSISTANT_ANNOUNCE_ZONES) ||
@@ -101,6 +115,7 @@ export async function interrogateLitecomSystem(config: Config): Promise<LitecomS
 
       const zone: Zone = {
         zone: systemZone,
+        parentZoneId: parentZoneId,
         ...availableServices(systemZoneServices),
       };
       switch (systemZone.level) {
@@ -132,11 +147,27 @@ export async function interrogateLitecomSystem(config: Config): Promise<LitecomS
 
           devices.push({
             device: systemDevice,
+            parentZoneId: getAndHandleParentZoneId(systemDevice.links),
             ...availableServices(systemDeviceServices),
           });
         }
       }
     }
+  }
+
+  // Resolve parent zones:
+  const missingParentZoneIdsList = [...missingParentZoneIds];
+  while (missingParentZoneIdsList.length > 0) {
+    const parentZoneId = missingParentZoneIdsList.pop();
+    if (!parentZoneId) break;
+    if (zoneById.has(parentZoneId)) continue;
+
+    const systemZone = await throttled(() => Litecom.ZonesService.getZoneById(parentZoneId));
+    const id = extractParentIdFromLinks(systemZone.links);
+    if (id && !zoneById.has(id)) {
+      missingParentZoneIdsList.push(id);
+    }
+    zoneById.set(parentZoneId, { zone: systemZone, parentZoneId: id });
   }
 
   return {
@@ -172,4 +203,13 @@ async function throttled<T>(fn: () => Promise<T>, ms?: number): Promise<T> {
   const result = await fn();
   await delay(ms);
   return result;
+}
+
+function extractParentIdFromLinks(links: Litecom.Link[]): string | undefined {
+  for (const link of links) {
+    if (link.rel === "parent") {
+      const x = link.href.split("/");
+      return x[x.length - 1];
+    }
+  }
 }

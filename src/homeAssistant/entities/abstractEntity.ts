@@ -1,15 +1,28 @@
+import { ZoneWithoutAvailableServices } from "../../litecom/interrogateLitecomSystem.ts";
 import { Device, Zone } from "../../litecom/restClient/index.ts";
 import { config } from "../../util/config.ts";
 import { log } from "../../util/logger.ts";
 import { MqttClient } from "../mqttClient.ts";
 
 export abstract class AbstractEntity {
-  get objectId(): string {
-    return AbstractEntity.createObjectId(this.device ?? this.zone);
+  protected readonly name: string;
+
+  constructor(
+    private readonly mqttClient: MqttClient,
+    protected readonly zone: Zone,
+    parentZones: ReadonlyArray<ZoneWithoutAvailableServices>,
+    protected readonly device?: Device,
+  ) {
+    const entityName = device?.name ?? zone.name;
+    this.name = parentZones.length > 0
+      ? `${parentZones.map(({ zone }) => zone.name).join("/")}/${entityName}`
+      : entityName;
+
+    this.subscribe();
   }
 
-  get name(): string {
-    return this.device?.name ?? this.zone.name;
+  get objectId(): string {
+    return AbstractEntity.createObjectId(this.device ?? this.zone);
   }
 
   get uniqueId(): string {
@@ -23,14 +36,6 @@ export abstract class AbstractEntity {
     string | number | boolean
   >;
   abstract get litecomServiceType(): "lighting";
-
-  constructor(
-    private readonly mqttClient: MqttClient,
-    protected readonly zone: Zone,
-    protected readonly device?: Device,
-  ) {
-    this.subscribe();
-  }
 
   private subscribe() {
     for (const topic of Object.values(this.homeAssistantCommandTopics)) {
