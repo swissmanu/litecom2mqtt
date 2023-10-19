@@ -19,6 +19,8 @@ jobs:
               uses: denolib/setup-deno@v2
               with:
                 deno-version: ${{ env.DENO_VERSION }}
+            - name: Typecheck
+              run: deno check
             - name: Format Check
               run: deno fmt --check
             - name: Lint
