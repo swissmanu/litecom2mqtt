@@ -1,4 +1,4 @@
-import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
+import { z } from "../deps.ts";
 import type { LightingServiceService } from "../litecom/restClient/index.ts";
 import { Logger } from "../util/logger.ts";
 

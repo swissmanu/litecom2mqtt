@@ -1,11 +1,10 @@
 {
   "version": "3",
-  "redirects": {
-    "https://deno.land/x/zod/mod.ts": "https://deno.land/x/zod@v3.22.4/mod.ts"
-  },
   "remote": {
     "https://cdn.skypack.dev/-/sinon@v16.1.0-vuJ3UP1MxqXWWDLwSauY/dist=es2019,mode=imports/optimized/sinon.js": "1d5d934fa6844279c685eb4d77539e1e2f6b6d6879d0d3976bd932809532d283",
+    "https://cdn.skypack.dev/-/sinon@v16.1.3-t7sRr0fKVScHZJpOfGit/dist=es2019,mode=imports/optimized/sinon.js": "8b25a3f5dc1f380deba9f234d15729c5af68b7aba62d2e2030358721a3622e7f",
     "https://cdn.skypack.dev/sinon?dts": "2bb43c115804bec93c4c0c454d75dbac962c8d27786e0678472ac149432fc373",
+    "https://cdn.skypack.dev/sinon@16.1.3?dts": "75dfd547239bdc075dee080e7588d456cde72bd4dffe9d872bd79ff6890c0358",
     "https://deno.land/std@0.204.0/assert/_constants.ts": "8a9da298c26750b28b326b297316cdde860bc237533b07e1337c021379e6b2a9",
     "https://deno.land/std@0.204.0/assert/_diff.ts": "58e1461cc61d8eb1eacbf2a010932bf6a05b79344b02ca38095f9b805795dc48",
     "https://deno.land/std@0.204.0/assert/_format.ts": "a69126e8a469009adf4cf2a50af889aca364c349797e63174884a52ff75cf4c7",

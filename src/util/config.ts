@@ -1,4 +1,4 @@
-import { z } from "https://deno.land/x/zod/mod.ts";
+import { z } from "../deps.ts";
 
 const Config = z.object({
   LITECOM2MQTT_LOG_LEVEL: z.union([
