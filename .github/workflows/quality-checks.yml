@@ -20,7 +20,7 @@ jobs:
               with:
                 deno-version: ${{ env.DENO_VERSION }}
             - name: Typecheck
-              run: deno check
+              run: deno check src/main.ts
             - name: Format Check
               run: deno fmt --check
             - name: Lint
