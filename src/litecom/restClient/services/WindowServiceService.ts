@@ -2,12 +2,12 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { MotorService } from '../models/MotorService.ts';
-import type { putMotorDimmableOption } from '../models/putMotorDimmableOption.ts';
-import type { putMotorService } from '../models/putMotorService.ts';
-import type { CancelablePromise } from '../core/CancelablePromise.ts';
-import { OpenAPI } from '../core/OpenAPI.ts';
-import { request as __request } from '../core/request.ts';
+import type { MotorService } from '../models/MotorService.js';
+import type { putMotorDimmableOption } from '../models/putMotorDimmableOption.js';
+import type { putMotorService } from '../models/putMotorService.js';
+import type { CancelablePromise } from '../core/CancelablePromise.js';
+import { OpenAPI } from '../core/OpenAPI.js';
+import { request as __request } from '../core/request.js';
 export class WindowServiceService {
     /**
      * Returns the aggregated window position value in percentage [%] for the area with specified __{zoneID}__.<br> The value will be `null` if not all windows in the area have the same position.<br><br> Attributes available via MQTT topic subscription:
@@ -21,14 +21,12 @@ export class WindowServiceService {
      *
      * @throws ApiError
      */
-    public static getWindowServiceByZone(
-        zoneId: string,
-    ): CancelablePromise<MotorService> {
+    public static getWindowServiceByZone(zoneId: string): CancelablePromise<MotorService> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/zones/{zoneID}/services/window',
             path: {
-                'zoneID': zoneId,
+                zoneID: zoneId,
             },
             errors: {
                 404: `Details provided on HTTP 404 'Not Found' error.`,
@@ -56,7 +54,7 @@ export class WindowServiceService {
             method: 'PUT',
             url: '/zones/{zoneID}/services/window',
             path: {
-                'zoneID': zoneId,
+                zoneID: zoneId,
             },
             body: requestBody,
             mediaType: 'application/json',
@@ -81,7 +79,7 @@ export class WindowServiceService {
             method: 'PUT',
             url: '/zones/{zoneID}/services/window/dimmable',
             path: {
-                'zoneID': zoneId,
+                zoneID: zoneId,
             },
             body: requestBody,
             mediaType: 'application/json',
@@ -102,16 +100,13 @@ export class WindowServiceService {
      * * The value cannot be retrieved within an acceptable response time.
      * @throws ApiError
      */
-    public static getWindowServiceByZoneAndDevice(
-        zoneId: string,
-        deviceId: string,
-    ): CancelablePromise<MotorService> {
+    public static getWindowServiceByZoneAndDevice(zoneId: string, deviceId: string): CancelablePromise<MotorService> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/zones/{zoneID}/devices/{deviceID}/services/window',
             path: {
-                'zoneID': zoneId,
-                'deviceID': deviceId,
+                zoneID: zoneId,
+                deviceID: deviceId,
             },
             errors: {
                 404: `Details provided on HTTP 404 'Not Found' error.`,
@@ -140,8 +135,8 @@ export class WindowServiceService {
             method: 'PUT',
             url: '/zones/{zoneID}/devices/{deviceID}/services/window',
             path: {
-                'zoneID': zoneId,
-                'deviceID': deviceId,
+                zoneID: zoneId,
+                deviceID: deviceId,
             },
             body: requestBody,
             mediaType: 'application/json',
@@ -168,8 +163,8 @@ export class WindowServiceService {
             method: 'PUT',
             url: '/zones/{zoneID}/devices/{deviceID}/services/window/dimmable',
             path: {
-                'zoneID': zoneId,
-                'deviceID': deviceId,
+                zoneID: zoneId,
+                deviceID: deviceId,
             },
             body: requestBody,
             mediaType: 'application/json',

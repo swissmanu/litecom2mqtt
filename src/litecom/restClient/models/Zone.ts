@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { Link } from './Link.ts';
+import type { Link } from './Link.js';
 /**
  * Data model for a _Zone_ container.
  */
@@ -44,4 +44,3 @@ export namespace Zone {
         GROUP = 'GROUP',
     }
 }
-

@@ -2,13 +2,13 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { putDimmableOption } from '../models/putDimmableOption.ts';
-import type { putSequenceService } from '../models/putSequenceService.ts';
-import type { Sequence } from '../models/Sequence.ts';
-import type { SequenceService } from '../models/SequenceService.ts';
-import type { CancelablePromise } from '../core/CancelablePromise.ts';
-import { OpenAPI } from '../core/OpenAPI.ts';
-import { request as __request } from '../core/request.ts';
+import type { putDimmableOption } from '../models/putDimmableOption.js';
+import type { putSequenceService } from '../models/putSequenceService.js';
+import type { Sequence } from '../models/Sequence.js';
+import type { SequenceService } from '../models/SequenceService.js';
+import type { CancelablePromise } from '../core/CancelablePromise.js';
+import { OpenAPI } from '../core/OpenAPI.js';
+import { request as __request } from '../core/request.js';
 export class SequenceServiceService {
     /**
      * Returns the aggregated sequence pattern name, direct and indirect light values for all sequence luminaires in the area with the specified __{zoneID}__.<br><br> Attributes available via MQTT topic subscription:
@@ -22,14 +22,12 @@ export class SequenceServiceService {
      * * The value cannot be retrieved within an acceptable response time.
      * @throws ApiError
      */
-    public static getSequenceServiceByZone(
-        zoneId: string,
-    ): CancelablePromise<SequenceService> {
+    public static getSequenceServiceByZone(zoneId: string): CancelablePromise<SequenceService> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/zones/{zoneID}/services/sequence',
             path: {
-                'zoneID': zoneId,
+                zoneID: zoneId,
             },
             errors: {
                 404: `Details provided on HTTP 404 'Not Found' error.`,
@@ -55,7 +53,7 @@ export class SequenceServiceService {
             method: 'PUT',
             url: '/zones/{zoneID}/services/sequence',
             path: {
-                'zoneID': zoneId,
+                zoneID: zoneId,
             },
             body: requestBody,
             mediaType: 'application/json',
@@ -80,7 +78,7 @@ export class SequenceServiceService {
             method: 'PUT',
             url: '/zones/{zoneID}/services/sequence/dimmable',
             path: {
-                'zoneID': zoneId,
+                zoneID: zoneId,
             },
             body: requestBody,
             mediaType: 'application/json',
@@ -96,14 +94,12 @@ export class SequenceServiceService {
      * @returns Sequence The global _Sequence service_ pattern preset with the specified __{patternName}__.<br>
      * @throws ApiError
      */
-    public static getSequencePatternByName(
-        patternName: string,
-    ): CancelablePromise<Sequence> {
+    public static getSequencePatternByName(patternName: string): CancelablePromise<Sequence> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/global/services/sequence/{patternName}',
             path: {
-                'patternName': patternName,
+                patternName: patternName,
             },
             errors: {
                 404: `Details provided on HTTP 404 'Not Found' error.`,
@@ -130,8 +126,8 @@ export class SequenceServiceService {
             method: 'GET',
             url: '/zones/{zoneID}/devices/{deviceID}/services/sequence',
             path: {
-                'zoneID': zoneId,
-                'deviceID': deviceId,
+                zoneID: zoneId,
+                deviceID: deviceId,
             },
             errors: {
                 404: `Details provided on HTTP 404 'Not Found' error.`,
@@ -158,8 +154,8 @@ export class SequenceServiceService {
             method: 'PUT',
             url: '/zones/{zoneID}/devices/{deviceID}/services/sequence',
             path: {
-                'zoneID': zoneId,
-                'deviceID': deviceId,
+                zoneID: zoneId,
+                deviceID: deviceId,
             },
             body: requestBody,
             mediaType: 'application/json',
@@ -186,8 +182,8 @@ export class SequenceServiceService {
             method: 'PUT',
             url: '/zones/{zoneID}/devices/{deviceID}/services/sequence/dimmable',
             path: {
-                'zoneID': zoneId,
-                'deviceID': deviceId,
+                zoneID: zoneId,
+                deviceID: deviceId,
             },
             body: requestBody,
             mediaType: 'application/json',

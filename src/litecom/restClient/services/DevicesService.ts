@@ -2,11 +2,11 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { Device } from '../models/Device.ts';
-import type { Identifiable } from '../models/Identifiable.ts';
-import type { CancelablePromise } from '../core/CancelablePromise.ts';
-import { OpenAPI } from '../core/OpenAPI.ts';
-import { request as __request } from '../core/request.ts';
+import type { Device } from '../models/Device.js';
+import type { Identifiable } from '../models/Identifiable.js';
+import type { CancelablePromise } from '../core/CancelablePromise.js';
+import { OpenAPI } from '../core/OpenAPI.js';
+import { request as __request } from '../core/request.js';
 export class DevicesService {
     /**
      * Returns the devices assigned to the specified __{zoneID}__.<br> If no devices are available in the area an empty list is returned.<br> Devices of sub-areas are not returned.
@@ -14,14 +14,12 @@ export class DevicesService {
      * @returns Device Array of the devices assigned to the specified __{zoneID}__.<br>
      * @throws ApiError
      */
-    public static getDevicesByZone(
-        zoneId: string,
-    ): CancelablePromise<Array<Device>> {
+    public static getDevicesByZone(zoneId: string): CancelablePromise<Array<Device>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/zones/{zoneID}/devices',
             path: {
-                'zoneID': zoneId,
+                zoneID: zoneId,
             },
             errors: {
                 404: `Details provided on HTTP 404 'Not Found' error.`,
@@ -35,16 +33,13 @@ export class DevicesService {
      * @returns Device The details of the device with the specified __{deviceID}__ from the area with the specified __{zoneID}__.
      * @throws ApiError
      */
-    public static getDeviceByZoneAndId(
-        zoneId: string,
-        deviceId: string,
-    ): CancelablePromise<Device> {
+    public static getDeviceByZoneAndId(zoneId: string, deviceId: string): CancelablePromise<Device> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/zones/{zoneID}/devices/{deviceID}',
             path: {
-                'zoneID': zoneId,
-                'deviceID': deviceId,
+                zoneID: zoneId,
+                deviceID: deviceId,
             },
             errors: {
                 404: `Details provided on HTTP 404 'Not Found' error.`,
@@ -58,16 +53,13 @@ export class DevicesService {
      * @returns Identifiable An array of service IDs available in the device with the specified __{deviceID}__".
      * @throws ApiError
      */
-    public static getServicesByZoneAndDevice(
-        zoneId: string,
-        deviceId: string,
-    ): CancelablePromise<Array<Identifiable>> {
+    public static getServicesByZoneAndDevice(zoneId: string, deviceId: string): CancelablePromise<Array<Identifiable>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/zones/{zoneID}/devices/{deviceID}/services',
             path: {
-                'zoneID': zoneId,
-                'deviceID': deviceId,
+                zoneID: zoneId,
+                deviceID: deviceId,
             },
             errors: {
                 404: `Details provided on HTTP 404 'Not Found' error.`,

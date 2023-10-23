@@ -2,8 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { Link } from './Link.ts';
-import type { SceneKind } from './SceneKind.ts';
+import type { Link } from './Link.js';
+import type { SceneKind } from './SceneKind.js';
 /**
  * Map of the presets available for _Scene service_ of an area.
  */
@@ -22,4 +22,3 @@ export type SceneForZone = {
      */
     links: Array<Link>;
 };
-

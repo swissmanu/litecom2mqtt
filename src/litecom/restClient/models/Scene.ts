@@ -2,9 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { Intensity } from './Intensity.ts';
-import type { Link } from './Link.ts';
-import type { SceneKind } from './SceneKind.ts';
+import type { Intensity } from './Intensity.js';
+import type { Link } from './Link.js';
+import type { SceneKind } from './SceneKind.js';
 /**
  * Map of the presets available for _Scene service_.
  */
@@ -24,4 +24,3 @@ export type Scene = {
      */
     links: Array<Link>;
 };
-

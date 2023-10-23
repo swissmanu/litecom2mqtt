@@ -2,14 +2,14 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { putSceneService } from '../models/putSceneService.ts';
-import type { Scene } from '../models/Scene.ts';
-import type { SceneForZone } from '../models/SceneForZone.ts';
-import type { SceneNumber } from '../models/SceneNumber.ts';
-import type { SceneService } from '../models/SceneService.ts';
-import type { CancelablePromise } from '../core/CancelablePromise.ts';
-import { OpenAPI } from '../core/OpenAPI.ts';
-import { request as __request } from '../core/request.ts';
+import type { putSceneService } from '../models/putSceneService.js';
+import type { Scene } from '../models/Scene.js';
+import type { SceneForZone } from '../models/SceneForZone.js';
+import type { SceneNumber } from '../models/SceneNumber.js';
+import type { SceneService } from '../models/SceneService.js';
+import type { CancelablePromise } from '../core/CancelablePromise.js';
+import { OpenAPI } from '../core/OpenAPI.js';
+import { request as __request } from '../core/request.js';
 export class SceneServiceService {
     /**
      * Returns the current active scene and its out-of-tune state, along with other details, for the area with the specified __{zoneID}__.<br><br> Attributes available via MQTT topic subscription:
@@ -19,14 +19,12 @@ export class SceneServiceService {
      * @returns SceneService The current active scene and its out-of-tune state, along with other details, for the area with the specified __{zoneID}__.
      * @throws ApiError
      */
-    public static getSceneServiceByZone(
-        zoneId: string,
-    ): CancelablePromise<SceneService> {
+    public static getSceneServiceByZone(zoneId: string): CancelablePromise<SceneService> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/zones/{zoneID}/services/scene',
             path: {
-                'zoneID': zoneId,
+                zoneID: zoneId,
             },
             errors: {
                 404: `Details provided on HTTP 404 'Not Found' error.`,
@@ -40,15 +38,12 @@ export class SceneServiceService {
      * @returns SceneService The recalled active scene and its out-of-tune state, along with other details, for the area with the specified __{zoneID}__.
      * @throws ApiError
      */
-    public static putSceneServiceByZone(
-        zoneId: string,
-        requestBody: putSceneService,
-    ): CancelablePromise<SceneService> {
+    public static putSceneServiceByZone(zoneId: string, requestBody: putSceneService): CancelablePromise<SceneService> {
         return __request(OpenAPI, {
             method: 'PUT',
             url: '/zones/{zoneID}/services/scene',
             path: {
-                'zoneID': zoneId,
+                zoneID: zoneId,
             },
             body: requestBody,
             mediaType: 'application/json',
@@ -65,16 +60,13 @@ export class SceneServiceService {
      * @returns SceneForZone The scene information for the specified __{sceneNumber}__ [0-20] for the area with the specified __{zoneID}__.
      * @throws ApiError
      */
-    public static getSceneByZoneAndNumber(
-        zoneId: string,
-        sceneNumber: SceneNumber,
-    ): CancelablePromise<SceneForZone> {
+    public static getSceneByZoneAndNumber(zoneId: string, sceneNumber: SceneNumber): CancelablePromise<SceneForZone> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/zones/{zoneID}/services/scene/{sceneNumber}',
             path: {
-                'zoneID': zoneId,
-                'sceneNumber': sceneNumber,
+                zoneID: zoneId,
+                sceneNumber: sceneNumber,
             },
             errors: {
                 404: `Details provided on HTTP 404 'Not Found' error.`,
@@ -88,16 +80,13 @@ export class SceneServiceService {
      * @returns string The operation was accepted.
      * @throws ApiError
      */
-    public static putSceneByZoneAndNumber(
-        zoneId: string,
-        sceneNumber: SceneNumber,
-    ): CancelablePromise<string> {
+    public static putSceneByZoneAndNumber(zoneId: string, sceneNumber: SceneNumber): CancelablePromise<string> {
         return __request(OpenAPI, {
             method: 'PUT',
             url: '/zones/{zoneID}/services/scene/store/{sceneNumber}',
             path: {
-                'zoneID': zoneId,
-                'sceneNumber': sceneNumber,
+                zoneID: zoneId,
+                sceneNumber: sceneNumber,
             },
             responseHeader: 'X-Remote-Execution',
             errors: {
@@ -115,16 +104,13 @@ export class SceneServiceService {
      * @returns SceneService The current active scene and its out-of-tune state, along with other details, for the device with the specified __{deviceID}__ from the area with the specified __{zoneID}__.
      * @throws ApiError
      */
-    public static getSceneServiceByZoneAndDevice(
-        zoneId: string,
-        deviceId: string,
-    ): CancelablePromise<SceneService> {
+    public static getSceneServiceByZoneAndDevice(zoneId: string, deviceId: string): CancelablePromise<SceneService> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/zones/{zoneID}/devices/{deviceID}/services/scene',
             path: {
-                'zoneID': zoneId,
-                'deviceID': deviceId,
+                zoneID: zoneId,
+                deviceID: deviceId,
             },
             errors: {
                 404: `Details provided on HTTP 404 'Not Found' error.`,
@@ -148,8 +134,8 @@ export class SceneServiceService {
             method: 'PUT',
             url: '/zones/{zoneID}/devices/{deviceID}/services/scene',
             path: {
-                'zoneID': zoneId,
-                'deviceID': deviceId,
+                zoneID: zoneId,
+                deviceID: deviceId,
             },
             body: requestBody,
             mediaType: 'application/json',
@@ -176,9 +162,9 @@ export class SceneServiceService {
             method: 'GET',
             url: '/zones/{zoneID}/devices/{deviceID}/services/scene/{sceneNumber}',
             path: {
-                'zoneID': zoneId,
-                'deviceID': deviceId,
-                'sceneNumber': sceneNumber,
+                zoneID: zoneId,
+                deviceID: deviceId,
+                sceneNumber: sceneNumber,
             },
             errors: {
                 404: `Details provided on HTTP 404 'Not Found' error.`,
@@ -202,9 +188,9 @@ export class SceneServiceService {
             method: 'PUT',
             url: '/zones/{zoneID}/devices/{deviceID}/services/scene/store/{sceneNumber}',
             path: {
-                'zoneID': zoneId,
-                'deviceID': deviceId,
-                'sceneNumber': sceneNumber,
+                zoneID: zoneId,
+                deviceID: deviceId,
+                sceneNumber: sceneNumber,
             },
             responseHeader: 'X-Remote-Execution',
             errors: {

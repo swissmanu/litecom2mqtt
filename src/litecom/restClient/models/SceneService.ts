@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { Link } from './Link.ts';
+import type { Link } from './Link.js';
 /**
  * Data model for _Scene service_.<br> Scenes 0 and 1 are always "Working" and "Absence" respectively.<br>
  */
@@ -24,4 +24,3 @@ export type SceneService = {
      */
     links: Array<Link>;
 };
-

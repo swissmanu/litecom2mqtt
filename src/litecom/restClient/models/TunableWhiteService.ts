@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { Link } from './Link.ts';
+import type { Link } from './Link.js';
 /**
  * Data model for _Tunable White service_.
  */
@@ -16,4 +16,3 @@ export type TunableWhiteService = {
      */
     links: Array<Link>;
 };
-

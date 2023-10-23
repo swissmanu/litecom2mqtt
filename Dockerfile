@@ -1,8 +1,7 @@
-FROM lukechannings/deno:v1.37.2
+FROM node:18-alpine3.17
 
-USER deno
 WORKDIR /app
-ADD . /app
-RUN deno cache src/deps.ts && deno cache src/main.ts
-
-CMD ["run", "--allow-env", "--allow-net", "src/main.ts"]
+ADD package.json /app
+ADD ./dist /app/dist
+ADD ./node_modules /app/node_modules
+CMD ["dist/main.js"]

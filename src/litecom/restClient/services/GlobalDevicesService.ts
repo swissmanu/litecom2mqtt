@@ -2,11 +2,11 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { SkyScanner } from '../models/SkyScanner.ts';
-import type { WeatherStation } from '../models/WeatherStation.ts';
-import type { CancelablePromise } from '../core/CancelablePromise.ts';
-import { OpenAPI } from '../core/OpenAPI.ts';
-import { request as __request } from '../core/request.ts';
+import type { SkyScanner } from '../models/SkyScanner.js';
+import type { WeatherStation } from '../models/WeatherStation.js';
+import type { CancelablePromise } from '../core/CancelablePromise.js';
+import { OpenAPI } from '../core/OpenAPI.js';
+import { request as __request } from '../core/request.js';
 export class GlobalDevicesService {
     /**
      * Returns all iluminance values in lux [lx] reported by the global Sky-Scanner device available in the controller or in the multi-controller instalation.<br><br> Attributes available via MQTT topic subscription:

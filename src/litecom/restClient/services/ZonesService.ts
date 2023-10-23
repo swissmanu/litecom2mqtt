@@ -2,11 +2,11 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { Identifiable } from '../models/Identifiable.ts';
-import type { Zone } from '../models/Zone.ts';
-import type { CancelablePromise } from '../core/CancelablePromise.ts';
-import { OpenAPI } from '../core/OpenAPI.ts';
-import { request as __request } from '../core/request.ts';
+import type { Identifiable } from '../models/Identifiable.js';
+import type { Zone } from '../models/Zone.js';
+import type { CancelablePromise } from '../core/CancelablePromise.js';
+import { OpenAPI } from '../core/OpenAPI.js';
+import { request as __request } from '../core/request.js';
 export class ZonesService {
     /**
      * Returns an array of all areas (rooms, groups and zones).<br> If no areas are available an empty list is returned.<br> In multi-controller instalations areas from other controllers are also returned.<br> __Warning:__ This is a computation heavy operation!
@@ -25,14 +25,12 @@ export class ZonesService {
      * @returns Zone Area information and all available services for the specified __{zoneID}__.
      * @throws ApiError
      */
-    public static getZoneById(
-        zoneId: string,
-    ): CancelablePromise<Zone> {
+    public static getZoneById(zoneId: string): CancelablePromise<Zone> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/zones/{zoneID}',
             path: {
-                'zoneID': zoneId,
+                zoneID: zoneId,
             },
             errors: {
                 404: `Details provided on HTTP 404 'Not Found' error.`,
@@ -45,14 +43,12 @@ export class ZonesService {
      * @returns Identifiable An array of service IDs available in the area with the specified __{zoneID}__".
      * @throws ApiError
      */
-    public static getServicesByZone(
-        zoneId: string,
-    ): CancelablePromise<Array<Identifiable>> {
+    public static getServicesByZone(zoneId: string): CancelablePromise<Array<Identifiable>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/zones/{zoneID}/services',
             path: {
-                'zoneID': zoneId,
+                zoneID: zoneId,
             },
             errors: {
                 404: `Details provided on HTTP 404 'Not Found' error.`,

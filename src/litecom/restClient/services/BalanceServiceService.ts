@@ -2,12 +2,12 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { BalanceService } from '../models/BalanceService.ts';
-import type { putBalanceService } from '../models/putBalanceService.ts';
-import type { putDimmableOption } from '../models/putDimmableOption.ts';
-import type { CancelablePromise } from '../core/CancelablePromise.ts';
-import { OpenAPI } from '../core/OpenAPI.ts';
-import { request as __request } from '../core/request.ts';
+import type { BalanceService } from '../models/BalanceService.js';
+import type { putBalanceService } from '../models/putBalanceService.js';
+import type { putDimmableOption } from '../models/putDimmableOption.js';
+import type { CancelablePromise } from '../core/CancelablePromise.js';
+import { OpenAPI } from '../core/OpenAPI.js';
+import { request as __request } from '../core/request.js';
 export class BalanceServiceService {
     /**
      * Returns the aggregated light balance value in percentage [%] of all balance luminaires in the area with specified __{zoneID}__. A "balance" value of `100` means only direct light and `0` only indirect light.<br> The value will be `null` if not all balance luminaires in the area have the same balance value.<br><br> Attributes available via MQTT topic subscription:
@@ -21,14 +21,12 @@ export class BalanceServiceService {
      *
      * @throws ApiError
      */
-    public static getBalanceServiceByZone(
-        zoneId: string,
-    ): CancelablePromise<BalanceService> {
+    public static getBalanceServiceByZone(zoneId: string): CancelablePromise<BalanceService> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/zones/{zoneID}/services/balance',
             path: {
-                'zoneID': zoneId,
+                zoneID: zoneId,
             },
             errors: {
                 404: `Details provided on HTTP 404 'Not Found' error.`,
@@ -54,7 +52,7 @@ export class BalanceServiceService {
             method: 'PUT',
             url: '/zones/{zoneID}/services/balance',
             path: {
-                'zoneID': zoneId,
+                zoneID: zoneId,
             },
             body: requestBody,
             mediaType: 'application/json',
@@ -79,7 +77,7 @@ export class BalanceServiceService {
             method: 'PUT',
             url: '/zones/{zoneID}/services/balance/dimmable',
             path: {
-                'zoneID': zoneId,
+                zoneID: zoneId,
             },
             body: requestBody,
             mediaType: 'application/json',
@@ -109,8 +107,8 @@ export class BalanceServiceService {
             method: 'GET',
             url: '/zones/{zoneID}/devices/{deviceID}/services/balance',
             path: {
-                'zoneID': zoneId,
-                'deviceID': deviceId,
+                zoneID: zoneId,
+                deviceID: deviceId,
             },
             errors: {
                 404: `Details provided on HTTP 404 'Not Found' error.`,
@@ -137,8 +135,8 @@ export class BalanceServiceService {
             method: 'PUT',
             url: '/zones/{zoneID}/devices/{deviceID}/services/balance',
             path: {
-                'zoneID': zoneId,
-                'deviceID': deviceId,
+                zoneID: zoneId,
+                deviceID: deviceId,
             },
             body: requestBody,
             mediaType: 'application/json',
@@ -165,8 +163,8 @@ export class BalanceServiceService {
             method: 'PUT',
             url: '/zones/{zoneID}/devices/{deviceID}/services/balance/dimmable',
             path: {
-                'zoneID': zoneId,
-                'deviceID': deviceId,
+                zoneID: zoneId,
+                deviceID: deviceId,
             },
             body: requestBody,
             mediaType: 'application/json',

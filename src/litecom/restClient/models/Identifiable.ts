@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { Link } from './Link.ts';
+import type { Link } from './Link.js';
 /**
  * The name and type of a service.
  */
@@ -40,4 +40,3 @@ export namespace Identifiable {
         ERROR = 'ERROR',
     }
 }
-

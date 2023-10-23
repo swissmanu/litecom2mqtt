@@ -1,4 +1,4 @@
-import { ZoneWithoutAvailableServices } from "../litecom/interrogateLitecomSystem.ts";
+import { ZoneWithoutAvailableServices } from '../litecom/interrogateLitecomSystem.js';
 
 /**
  * Looks up all parent zones for a given zone. Requires a `Map` with all known zones from a Litecom system
@@ -9,22 +9,22 @@ import { ZoneWithoutAvailableServices } from "../litecom/interrogateLitecomSyste
  * @returns
  */
 export function getAllParentsForZone(
-  zone: ZoneWithoutAvailableServices,
-  zoneById: ReadonlyMap<string, ZoneWithoutAvailableServices>,
+    zone: ZoneWithoutAvailableServices,
+    zoneById: ReadonlyMap<string, ZoneWithoutAvailableServices>,
 ): ReadonlyArray<ZoneWithoutAvailableServices> {
-  return lookup(zone, zoneById);
+    return lookup(zone, zoneById);
 }
 
 function lookup(
-  zone: ZoneWithoutAvailableServices,
-  zoneById: ReadonlyMap<string, ZoneWithoutAvailableServices>,
-  parents: ZoneWithoutAvailableServices[] = [],
+    zone: ZoneWithoutAvailableServices,
+    zoneById: ReadonlyMap<string, ZoneWithoutAvailableServices>,
+    parents: ZoneWithoutAvailableServices[] = [],
 ): ZoneWithoutAvailableServices[] {
-  if (zone.parentZoneId) {
-    const parent = zoneById.get(zone.parentZoneId);
-    if (parent) {
-      return lookup(parent, zoneById, [parent, ...parents]);
+    if (zone.parentZoneId) {
+        const parent = zoneById.get(zone.parentZoneId);
+        if (parent) {
+            return lookup(parent, zoneById, [parent, ...parents]);
+        }
     }
-  }
-  return parents;
+    return parents;
 }

@@ -2,12 +2,12 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { putDimmableOption } from '../models/putDimmableOption.ts';
-import type { putTunableWhiteService } from '../models/putTunableWhiteService.ts';
-import type { TunableWhiteService } from '../models/TunableWhiteService.ts';
-import type { CancelablePromise } from '../core/CancelablePromise.ts';
-import { OpenAPI } from '../core/OpenAPI.ts';
-import { request as __request } from '../core/request.ts';
+import type { putDimmableOption } from '../models/putDimmableOption.js';
+import type { putTunableWhiteService } from '../models/putTunableWhiteService.js';
+import type { TunableWhiteService } from '../models/TunableWhiteService.js';
+import type { CancelablePromise } from '../core/CancelablePromise.js';
+import { OpenAPI } from '../core/OpenAPI.js';
+import { request as __request } from '../core/request.js';
 export class TunableWhiteServiceService {
     /**
      * Returns the aggregate white colour temperature value in Kelvins [K] of all tuneable white luminaires in the area with specified __{zoneID}__.<br> The value will be `null` if not all devices in the area have the same intensity.<br><br> Attributes available via MQTT topic subscription:
@@ -20,14 +20,12 @@ export class TunableWhiteServiceService {
      * * The value cannot be retrieved within an acceptable response time.
      * @throws ApiError
      */
-    public static getTunableWhiteServiceByZone(
-        zoneId: string,
-    ): CancelablePromise<TunableWhiteService> {
+    public static getTunableWhiteServiceByZone(zoneId: string): CancelablePromise<TunableWhiteService> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/zones/{zoneID}/services/tunableWhite',
             path: {
-                'zoneID': zoneId,
+                zoneID: zoneId,
             },
             errors: {
                 404: `Details provided on HTTP 404 'Not Found' error.`,
@@ -53,7 +51,7 @@ export class TunableWhiteServiceService {
             method: 'PUT',
             url: '/zones/{zoneID}/services/tunableWhite',
             path: {
-                'zoneID': zoneId,
+                zoneID: zoneId,
             },
             body: requestBody,
             mediaType: 'application/json',
@@ -78,7 +76,7 @@ export class TunableWhiteServiceService {
             method: 'PUT',
             url: '/zones/{zoneID}/services/tunableWhite/dimmable',
             path: {
-                'zoneID': zoneId,
+                zoneID: zoneId,
             },
             body: requestBody,
             mediaType: 'application/json',
@@ -107,8 +105,8 @@ export class TunableWhiteServiceService {
             method: 'GET',
             url: '/zones/{zoneID}/devices/{deviceID}/services/tunableWhite',
             path: {
-                'zoneID': zoneId,
-                'deviceID': deviceId,
+                zoneID: zoneId,
+                deviceID: deviceId,
             },
             errors: {
                 404: `Details provided on HTTP 404 'Not Found' error.`,
@@ -136,8 +134,8 @@ export class TunableWhiteServiceService {
             method: 'PUT',
             url: '/zones/{zoneID}/devices/{deviceID}/services/tunableWhite',
             path: {
-                'zoneID': zoneId,
-                'deviceID': deviceId,
+                zoneID: zoneId,
+                deviceID: deviceId,
             },
             body: requestBody,
             mediaType: 'application/json',
@@ -164,8 +162,8 @@ export class TunableWhiteServiceService {
             method: 'PUT',
             url: '/zones/{zoneID}/devices/{deviceID}/services/tunableWhite/dimmable',
             path: {
-                'zoneID': zoneId,
-                'deviceID': deviceId,
+                zoneID: zoneId,
+                deviceID: deviceId,
             },
             body: requestBody,
             mediaType: 'application/json',

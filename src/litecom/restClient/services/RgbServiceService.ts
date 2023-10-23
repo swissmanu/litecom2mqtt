@@ -2,11 +2,11 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { putRGBService } from '../models/putRGBService.ts';
-import type { RGBService } from '../models/RGBService.ts';
-import type { CancelablePromise } from '../core/CancelablePromise.ts';
-import { OpenAPI } from '../core/OpenAPI.ts';
-import { request as __request } from '../core/request.ts';
+import type { putRGBService } from '../models/putRGBService.js';
+import type { RGBService } from '../models/RGBService.js';
+import type { CancelablePromise } from '../core/CancelablePromise.js';
+import { OpenAPI } from '../core/OpenAPI.js';
+import { request as __request } from '../core/request.js';
 export class RgbServiceService {
     /**
      * Returns the aggregate RGB colour in hexadecimal format (#RRGGBB) of all RGB colour luminaires in the area with specified __{zoneID}__.<br> The value will be `null` if not all devices in the area have the same RGB colour.<br><br> Attributes available via MQTT topic subscription:
@@ -19,14 +19,12 @@ export class RgbServiceService {
      * * The value cannot be retrieved within an acceptable response time.
      * @throws ApiError
      */
-    public static getRgbServiceByZone(
-        zoneId: string,
-    ): CancelablePromise<RGBService> {
+    public static getRgbServiceByZone(zoneId: string): CancelablePromise<RGBService> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/zones/{zoneID}/services/rgb',
             path: {
-                'zoneID': zoneId,
+                zoneID: zoneId,
             },
             errors: {
                 404: `Details provided on HTTP 404 'Not Found' error.`,
@@ -44,15 +42,12 @@ export class RgbServiceService {
      * * The value cannot be retrieved within an acceptable response time.
      * @throws ApiError
      */
-    public static putRgbServiceByZone(
-        zoneId: string,
-        requestBody: putRGBService,
-    ): CancelablePromise<RGBService> {
+    public static putRgbServiceByZone(zoneId: string, requestBody: putRGBService): CancelablePromise<RGBService> {
         return __request(OpenAPI, {
             method: 'PUT',
             url: '/zones/{zoneID}/services/rgb',
             path: {
-                'zoneID': zoneId,
+                zoneID: zoneId,
             },
             body: requestBody,
             mediaType: 'application/json',
@@ -73,16 +68,13 @@ export class RgbServiceService {
      * * The value cannot be retrieved within an acceptable response time.
      * @throws ApiError
      */
-    public static getRgbServiceByZoneAndDevice(
-        zoneId: string,
-        deviceId: string,
-    ): CancelablePromise<RGBService> {
+    public static getRgbServiceByZoneAndDevice(zoneId: string, deviceId: string): CancelablePromise<RGBService> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/zones/{zoneID}/devices/{deviceID}/services/rgb',
             path: {
-                'zoneID': zoneId,
-                'deviceID': deviceId,
+                zoneID: zoneId,
+                deviceID: deviceId,
             },
             errors: {
                 404: `Details provided on HTTP 404 'Not Found' error.`,
@@ -109,8 +101,8 @@ export class RgbServiceService {
             method: 'PUT',
             url: '/zones/{zoneID}/devices/{deviceID}/services/rgb',
             path: {
-                'zoneID': zoneId,
-                'deviceID': deviceId,
+                zoneID: zoneId,
+                deviceID: deviceId,
             },
             body: requestBody,
             mediaType: 'application/json',

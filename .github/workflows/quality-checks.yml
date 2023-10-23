@@ -9,22 +9,22 @@ on:
     workflow_call:
 
 env:
-  DENO_VERSION: 1.37.2
+    NODE_VERSION: 18.18.0
 
 jobs:
     quality-checks:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
-            - name: Use Deno Version ${{ env.DENO_VERSION }}
-              uses: denolib/setup-deno@v2
+            - name: Use Node Version ${{ env.NODE_VERSION }}
+              uses: actions/setup-node@v4
               with:
-                deno-version: ${{ env.DENO_VERSION }}
+                  node-version: ${{ env.NODE_VERSION }}
+            - name: Install Dependencies
+              run: yarn install --immutable
             - name: Typecheck
-              run: deno check src/main.ts
-            - name: Format Check
-              run: deno fmt --check
+              run: yarn typecheck
             - name: Lint
-              run: deno lint
+              run: yarn lint
             - name: Test
-              run: deno test
+              run: yarn test

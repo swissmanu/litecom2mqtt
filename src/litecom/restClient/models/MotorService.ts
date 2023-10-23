@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { Link } from './Link.ts';
+import type { Link } from './Link.js';
 /**
  * Data model for _Motor service_.<br> This is used for _Blind_, _Slat_, _Screen_ and _Window_ services.<br> Provides the last know motor position. The real position is only available in xSM mode of the motor device.
  */
@@ -16,4 +16,3 @@ export type MotorService = {
      */
     links: Array<Link>;
 };
-

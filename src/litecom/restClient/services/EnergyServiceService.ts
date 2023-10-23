@@ -2,12 +2,12 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { EnergyDataSettings } from '../models/EnergyDataSettings.ts';
-import type { EnergyService } from '../models/EnergyService.ts';
-import type { putSharedEnergyService } from '../models/putSharedEnergyService.ts';
-import type { CancelablePromise } from '../core/CancelablePromise.ts';
-import { OpenAPI } from '../core/OpenAPI.ts';
-import { request as __request } from '../core/request.ts';
+import type { EnergyDataSettings } from '../models/EnergyDataSettings.js';
+import type { EnergyService } from '../models/EnergyService.js';
+import type { putSharedEnergyService } from '../models/putSharedEnergyService.js';
+import type { CancelablePromise } from '../core/CancelablePromise.js';
+import { OpenAPI } from '../core/OpenAPI.js';
+import { request as __request } from '../core/request.js';
 export class EnergyServiceService {
     /**
      * Returns the aggregated active energy value reported by the gear(s), converted to Watt-hour [Wh], for the area with specified __{zoneID}__.<br> It is the sum of values reported by all descendant gears in the hierarchy (i.e. gears in the area or in sub-areas) that support the _Energy service_.<br><br> Attributes available via MQTT topic subscription:
@@ -17,14 +17,12 @@ export class EnergyServiceService {
      *
      * @throws ApiError
      */
-    public static getEnergyServiceByZone(
-        zoneId: string,
-    ): CancelablePromise<EnergyService> {
+    public static getEnergyServiceByZone(zoneId: string): CancelablePromise<EnergyService> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/zones/{zoneID}/services/energy',
             path: {
-                'zoneID': zoneId,
+                zoneID: zoneId,
             },
             errors: {
                 404: `Details provided on HTTP 404 'Not Found' error.`,
@@ -52,9 +50,7 @@ export class EnergyServiceService {
      * @returns EnergyDataSettings The _Energy service_ global data settings.
      * @throws ApiError
      */
-    public static putSharedEnergyService(
-        requestBody: putSharedEnergyService,
-    ): CancelablePromise<EnergyDataSettings> {
+    public static putSharedEnergyService(requestBody: putSharedEnergyService): CancelablePromise<EnergyDataSettings> {
         return __request(OpenAPI, {
             method: 'PUT',
             url: '/global/services/energy/dataSettings',
@@ -75,16 +71,13 @@ export class EnergyServiceService {
      *
      * @throws ApiError
      */
-    public static getEnergyServiceByZoneAndDevice(
-        zoneId: string,
-        deviceId: string,
-    ): CancelablePromise<EnergyService> {
+    public static getEnergyServiceByZoneAndDevice(zoneId: string, deviceId: string): CancelablePromise<EnergyService> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/zones/{zoneID}/devices/{deviceID}/services/energy',
             path: {
-                'zoneID': zoneId,
-                'deviceID': deviceId,
+                zoneID: zoneId,
+                deviceID: deviceId,
             },
             errors: {
                 404: `Details provided on HTTP 404 'Not Found' error.`,

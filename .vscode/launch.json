@@ -5,21 +5,13 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "type": "node",
-            "program": "${workspaceFolder}/src/main.ts",
-            "cwd": "${workspaceFolder}",
-            "runtimeExecutable": "/deno/bin/deno",
             "envFile": "${workspaceFolder}/.env",
-            "runtimeArgs": [
-                "run",
-                "--inspect-wait",
-                "--allow-all",
-                "--unsafely-ignore-certificate-errors",
-                "--allow-net"
-            ],
-            "attachSimplePort": 9229
+            "runtimeArgs": ["--loader", "ts-node/esm"],
+            "skipFiles": ["<node_internals>/**"],
+            "program": "${workspaceFolder}/src/main.ts"
         }
     ]
 }

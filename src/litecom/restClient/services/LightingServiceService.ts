@@ -2,12 +2,12 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { LightingService } from '../models/LightingService.ts';
-import type { putDimmableOption } from '../models/putDimmableOption.ts';
-import type { putLightingService } from '../models/putLightingService.ts';
-import type { CancelablePromise } from '../core/CancelablePromise.ts';
-import { OpenAPI } from '../core/OpenAPI.ts';
-import { request as __request } from '../core/request.ts';
+import type { LightingService } from '../models/LightingService.js';
+import type { putDimmableOption } from '../models/putDimmableOption.js';
+import type { putLightingService } from '../models/putLightingService.js';
+import type { CancelablePromise } from '../core/CancelablePromise.js';
+import { OpenAPI } from '../core/OpenAPI.js';
+import { request as __request } from '../core/request.js';
 export class LightingServiceService {
     /**
      * Returns the current aggregated intensity value in percentage [%] of all luminaires in the area with specified __{zoneID}__.<br> The value will be `null` if not all devices in the area have the same intensity.<br><br> Attributes available via MQTT topic subscription:
@@ -20,14 +20,12 @@ export class LightingServiceService {
      * * The value cannot be retrieved within an acceptable response time.
      * @throws ApiError
      */
-    public static getLightingServiceByZone(
-        zoneId: string,
-    ): CancelablePromise<LightingService> {
+    public static getLightingServiceByZone(zoneId: string): CancelablePromise<LightingService> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/zones/{zoneID}/services/lighting',
             path: {
-                'zoneID': zoneId,
+                zoneID: zoneId,
             },
             errors: {
                 404: `Details provided on HTTP 404 'Not Found' error.`,
@@ -53,7 +51,7 @@ export class LightingServiceService {
             method: 'PUT',
             url: '/zones/{zoneID}/services/lighting',
             path: {
-                'zoneID': zoneId,
+                zoneID: zoneId,
             },
             body: requestBody,
             mediaType: 'application/json',
@@ -78,7 +76,7 @@ export class LightingServiceService {
             method: 'PUT',
             url: '/zones/{zoneID}/services/lighting/dimmable',
             path: {
-                'zoneID': zoneId,
+                zoneID: zoneId,
             },
             body: requestBody,
             mediaType: 'application/json',
@@ -108,8 +106,8 @@ export class LightingServiceService {
             method: 'GET',
             url: '/zones/{zoneID}/devices/{deviceID}/services/lighting',
             path: {
-                'zoneID': zoneId,
-                'deviceID': deviceId,
+                zoneID: zoneId,
+                deviceID: deviceId,
             },
             errors: {
                 404: `Details provided on HTTP 404 'Not Found' error.`,
@@ -136,8 +134,8 @@ export class LightingServiceService {
             method: 'PUT',
             url: '/zones/{zoneID}/devices/{deviceID}/services/lighting',
             path: {
-                'zoneID': zoneId,
-                'deviceID': deviceId,
+                zoneID: zoneId,
+                deviceID: deviceId,
             },
             body: requestBody,
             mediaType: 'application/json',
@@ -164,8 +162,8 @@ export class LightingServiceService {
             method: 'PUT',
             url: '/zones/{zoneID}/devices/{deviceID}/services/lighting/dimmable',
             path: {
-                'zoneID': zoneId,
-                'deviceID': deviceId,
+                zoneID: zoneId,
+                deviceID: deviceId,
             },
             body: requestBody,
             mediaType: 'application/json',

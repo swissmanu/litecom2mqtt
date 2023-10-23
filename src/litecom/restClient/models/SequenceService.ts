@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { Link } from './Link.ts';
+import type { Link } from './Link.js';
 /**
  * Data model for _Sequence service_.<br> Attribute "pattern" shows the last applied sequence pattern.
  */
@@ -24,4 +24,3 @@ export type SequenceService = {
      */
     links: Array<Link>;
 };
-

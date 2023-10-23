@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { Link } from './Link.ts';
+import type { Link } from './Link.js';
 /**
  * Data model for _General Contact service_.
  */
@@ -25,4 +25,3 @@ export namespace GeneralContactService {
         CLOSED = 'CLOSED',
     }
 }
-

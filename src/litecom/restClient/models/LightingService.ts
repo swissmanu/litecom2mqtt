@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { Link } from './Link.ts';
+import type { Link } from './Link.js';
 /**
  * Data model for _Lighting service_.
  */
@@ -16,4 +16,3 @@ export type LightingService = {
      */
     links: Array<Link>;
 };
-

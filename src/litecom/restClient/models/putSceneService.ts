@@ -2,11 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { SceneNumber } from './SceneNumber.ts';
+import type { SceneNumber } from './SceneNumber.js';
 /**
  * Data model to change the current scene.
  */
 export type putSceneService = {
     activeScene: SceneNumber;
 };
-

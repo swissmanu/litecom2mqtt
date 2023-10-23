@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { Link } from './Link.ts';
+import type { Link } from './Link.js';
 /**
  * Data model of pattern presets used by _Sequence service_.
  */
@@ -48,4 +48,3 @@ export namespace Sequence {
         UNDEFINED = 'UNDEFINED',
     }
 }
-

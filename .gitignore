@@ -1,2 +1,4 @@
 .env
 *-openapi.yaml
+dist/
+node_modules/

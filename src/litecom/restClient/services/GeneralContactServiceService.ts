@@ -2,11 +2,11 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { GeneralContactService } from '../models/GeneralContactService.ts';
-import type { putGeneralContactService } from '../models/putGeneralContactService.ts';
-import type { CancelablePromise } from '../core/CancelablePromise.ts';
-import { OpenAPI } from '../core/OpenAPI.ts';
-import { request as __request } from '../core/request.ts';
+import type { GeneralContactService } from '../models/GeneralContactService.js';
+import type { putGeneralContactService } from '../models/putGeneralContactService.js';
+import type { CancelablePromise } from '../core/CancelablePromise.js';
+import { OpenAPI } from '../core/OpenAPI.js';
+import { request as __request } from '../core/request.js';
 export class GeneralContactServiceService {
     /**
      * Returns the aggregated output state 'OPEN' or 'CLOSED' of all general contacts in the area with specified __{zoneID}__.<br> The value will be `null` if not all general contacts in the area have the same state.<br><br> Attributes available via MQTT topic subscription:
@@ -20,14 +20,12 @@ export class GeneralContactServiceService {
      *
      * @throws ApiError
      */
-    public static getGeneralContactServiceByZone(
-        zoneId: string,
-    ): CancelablePromise<GeneralContactService> {
+    public static getGeneralContactServiceByZone(zoneId: string): CancelablePromise<GeneralContactService> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/zones/{zoneID}/services/generalContact',
             path: {
-                'zoneID': zoneId,
+                zoneID: zoneId,
             },
             errors: {
                 404: `Details provided on HTTP 404 'Not Found' error.`,
@@ -53,7 +51,7 @@ export class GeneralContactServiceService {
             method: 'PUT',
             url: '/zones/{zoneID}/services/generalContact',
             path: {
-                'zoneID': zoneId,
+                zoneID: zoneId,
             },
             body: requestBody,
             mediaType: 'application/json',
@@ -83,8 +81,8 @@ export class GeneralContactServiceService {
             method: 'GET',
             url: '/zones/{zoneID}/devices/{deviceID}/services/generalContact',
             path: {
-                'zoneID': zoneId,
-                'deviceID': deviceId,
+                zoneID: zoneId,
+                deviceID: deviceId,
             },
             errors: {
                 404: `Details provided on HTTP 404 'Not Found' error.`,
@@ -112,8 +110,8 @@ export class GeneralContactServiceService {
             method: 'PUT',
             url: '/zones/{zoneID}/devices/{deviceID}/services/generalContact',
             path: {
-                'zoneID': zoneId,
-                'deviceID': deviceId,
+                zoneID: zoneId,
+                deviceID: deviceId,
             },
             body: requestBody,
             mediaType: 'application/json',
