@@ -14,7 +14,9 @@
 
 | Variable                                                 | Description                                                                                                                                   |
 | -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| `LITECOM2MQTT_MQTT_BROKER_URL`                           | The URL to your MQTT broker.<br />Examples: `mqtt://192.168.1.42:1883`, `mqtt://mosquitto:1883`                                               |
+| `LITECOM2MQTT_MQTT_BROKER_HOST`                          | The hostname where your MQTT broker is running.<br />Examples: `192.168.1.42`, `mosquitto.domin.tld`                                          |
+| `LITECOM2MQTT_MQTT_BROKER_PORT`                          | The port on which your MQTT broker is running on the given host.<br />Examples: `1883`, `8883`                                                |
+| `LITECOM2MQTT_MQTT_BROKER_PROTOCOL`                      | The protocol to use to connect to you MQTT broker.<br />Allowed values: `mqtt`, `mqtts`                                                       |
 | `LITECOM2MQTT_MQTT_TOPIC_PREFIX`                         | Optional. All `litecom2mqtt` MQTT topics are prefixed using this string.<br />Default value: `litecom2mqtt`                                   |
 | `LITECOM2MQTT_LOG_LEVEL`                                 | Optional. One of `DEBUG`, `INFO`, `WARNING`, `ERROR`, or `CRITICAL` to control log verbosity.<br />Default value: `ERROR`                     |
 | `LITECOM2MQTT_LITECOM_HOST`                              | The host where your Litecom CCD can be reached.<br />Examples: `192.168.1.50`, `litecom.yourdomain.tld`                                       |

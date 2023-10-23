@@ -11,7 +11,9 @@ const Config = z.object({
             z.literal('CRITICAL'),
         ])
         .default('ERROR'),
-    LITECOM2MQTT_MQTT_BROKER_URL: z.string(),
+    LITECOM2MQTT_MQTT_BROKER_HOST: z.string(),
+    LITECOM2MQTT_MQTT_BROKER_PORT: z.string().transform(stringToInt),
+    LITECOM2MQTT_MQTT_BROKER_PROTOCOL: z.union([z.literal('mqtt'), z.literal('mqtts')]).default('mqtt'),
     LITECOM2MQTT_MQTT_TOPIC_PREFIX: z.string().default('litecom2mqtt'),
     LITECOM2MQTT_LITECOM_HOST: z.string(),
     LITECOM2MQTT_LITECOM_CONSUMER_NAME: z.string(),
@@ -27,6 +29,16 @@ export type Config = z.infer<typeof Config>;
 
 function stringToBoolean(x: string | undefined): boolean {
     return x === 'true';
+}
+
+function stringToInt(x: string | undefined): number {
+    if (typeof x === 'string') {
+        const result = Number.parseInt(x, 10);
+        if (!Number.isNaN(result)) {
+            return result;
+        }
+    }
+    throw new Error(`Cannot transform ${x} to int.`);
 }
 
 const result = Config.safeParse(process.env);

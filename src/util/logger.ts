@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { config } from './config.js';
 
 type LogFn = (message: string, context?: Context) => void;
-type LogHandler = (level: LogLevel, timestamp: number, message: string, context?: Context) => void;
+type LogHandler = (level: LogLevel, timestamp: number, message: string, context?: Context) => Promise<void>;
 type Context = Record<string, string | number | boolean | object>;
 
 export interface Logger {
@@ -36,7 +36,7 @@ const LogLevelSchema = z
         return false;
     })
     .transform<LogLevel>((x) => {
-        switch (x) {
+        switch (x.toLowerCase()) {
             case 'critical':
                 return LogLevel.CRITICAL;
             case 'error':
@@ -47,6 +47,8 @@ const LogLevelSchema = z
                 return LogLevel.INFO;
             case 'debug':
                 return LogLevel.DEBUG;
+            default:
+                throw new Error(`Could not transform ${x} to LogLevel`);
         }
     });
 
@@ -60,7 +62,7 @@ export class Log implements Logger {
         const now = Date.now();
         if (level <= this.level) {
             for (const handler of this.handlers) {
-                handler(level, now, message, context);
+                void handler(level, now, message, context);
             }
         }
     }
@@ -83,5 +85,5 @@ export class Log implements Logger {
 }
 
 export const log = new Log(LogLevelSchema.parse(config.LITECOM2MQTT_LOG_LEVEL), [
-    (_, timestamp, message) => console.log(timestamp, message),
+    async (_, timestamp, message) => console.log(timestamp, message),
 ]);

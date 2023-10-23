@@ -22,9 +22,13 @@ export class MqttClient {
         const zoneTopicRegex = new RegExp(`^${config.LITECOM2MQTT_MQTT_TOPIC_PREFIX}/(.*)/(.*)/(.*)$`);
 
         this.client = await connectAsync({
-            host: config.LITECOM2MQTT_MQTT_BROKER_URL,
-            port: 1883, // TODO
+            protocol: config.LITECOM2MQTT_MQTT_BROKER_PROTOCOL,
+            host: config.LITECOM2MQTT_MQTT_BROKER_HOST,
+            port: config.LITECOM2MQTT_MQTT_BROKER_PORT,
         });
+        log.info(
+            `Connected to broker ${config.LITECOM2MQTT_MQTT_BROKER_PROTOCOL}://${config.LITECOM2MQTT_LITECOM_HOST}:${config.LITECOM2MQTT_MQTT_BROKER_PORT}`,
+        );
 
         this.client.on('message', (topic: string, payloadBuffer: Buffer) => {
             const payload = decoder.decode(payloadBuffer);
