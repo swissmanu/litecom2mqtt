@@ -6,6 +6,7 @@ on:
             - '**'
         pull_request:
             - '**'
+    workflow_call:
 
 env:
   DENO_VERSION: 1.37.2
