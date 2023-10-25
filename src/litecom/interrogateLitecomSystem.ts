@@ -5,7 +5,7 @@ import * as Litecom from './restClient/index.js';
 type AvailableServices = {
     lighting: boolean;
     blinds: boolean;
-    scenes: boolean;
+    scenes: false | ReadonlyArray<Scene>;
 };
 
 type Zone = AvailableServices & ZoneWithoutAvailableServices;
@@ -18,6 +18,11 @@ export type ZoneWithoutAvailableServices = {
 type Device = AvailableServices & {
     device: Litecom.Device;
     parentZoneId?: string;
+};
+
+type Scene = {
+    id: number;
+    name: string;
 };
 
 type LitecomSystemInformation = {
@@ -116,7 +121,7 @@ export async function interrogateLitecomSystem(config: Config): Promise<LitecomS
             const zone: Zone = {
                 zone: systemZone,
                 parentZoneId: parentZoneId,
-                ...availableServices(systemZoneServices),
+                ...(await availableServices(systemZoneServices, systemZone)),
             };
             switch (systemZone.level) {
                 case Litecom.Zone.level.ZONE:
@@ -150,7 +155,7 @@ export async function interrogateLitecomSystem(config: Config): Promise<LitecomS
                     devices.push({
                         device: systemDevice,
                         parentZoneId: getAndHandleParentZoneId(systemDevice.links),
-                        ...availableServices(systemDeviceServices),
+                        ...(await availableServices(systemDeviceServices, systemZone, systemDevice)),
                     });
                 }
             }
@@ -182,12 +187,60 @@ export async function interrogateLitecomSystem(config: Config): Promise<LitecomS
     };
 }
 
-function availableServices(services: Litecom.Identifiable[]): { lighting: boolean; blinds: boolean; scenes: boolean } {
+async function availableServices(
+    services: Litecom.Identifiable[],
+    zone: Litecom.Zone,
+    device?: Litecom.Device,
+): Promise<AvailableServices> {
+    const hasSceneService = services.findIndex((s) => s.type === Litecom.Identifiable.type.SCENE) !== -1;
+
     return {
         lighting: services.findIndex((s) => s.type === Litecom.Identifiable.type.LIGHTING) !== -1,
         blinds: services.findIndex((s) => s.type === Litecom.Identifiable.type.BLIND) !== -1,
-        scenes: services.findIndex((s) => s.type === Litecom.Identifiable.type.SCENE) !== -1,
+        scenes: hasSceneService && (await getScenes(zone, device)),
     };
+}
+
+async function getScenes(zone: Litecom.Zone, device?: Litecom.Device): Promise<ReadonlyArray<Scene>> {
+    log.debug(
+        `Fetching scene service for ${device ? `device "${device.id}" in zone "${zone.id}"` : `zone "${zone.id}"`}`,
+    );
+    const sceneService = await (device
+        ? throttled(() => Litecom.SceneServiceService.getSceneServiceByZoneAndDevice(zone.id, device.id))
+        : throttled(() => Litecom.SceneServiceService.getSceneServiceByZone(zone.id)));
+    log.debug(
+        `Fetched scene service for ${device ? `device "${device.id}" in zone "${zone.id}"` : `zone "${zone.id}"`}`,
+    );
+
+    const sceneNumbers = sceneService.links
+        .filter((x) => x.rel === 'child')
+        .map((x) => Number.parseInt(x.href.split('/').at(-1) ?? '', 10));
+
+    const scenes: Scene[] = [];
+    for (const sceneNumber of sceneNumbers) {
+        log.debug(
+            `Fetching scene number "${sceneNumber}" for ${
+                device ? `device "${device.id}" in zone "${zone.id}"` : `zone "${zone.id}"`
+            }`,
+        );
+        const scene = await (device
+            ? throttled(() =>
+                  Litecom.SceneServiceService.getSceneByZoneAndDeviceAndNumber(zone.id, device.id, sceneNumber),
+              )
+            : throttled(() => Litecom.SceneServiceService.getSceneByZoneAndNumber(zone.id, sceneNumber)));
+        log.debug(
+            `Fetched scene number "${sceneNumber}" for ${
+                device ? `device "${device.id}" in zone "${zone.id}"` : `zone "${zone.id}"`
+            }`,
+        );
+
+        if (scene.name !== null && scene.number !== null) {
+            scenes.push({ id: scene.number, name: scene.name });
+        } else {
+            log.warning(`Name and/or number for scene was null. Scene ignored.`);
+        }
+    }
+    return scenes;
 }
 
 function delay(ms = 200) {
@@ -210,8 +263,7 @@ async function throttled<T>(fn: () => Promise<T>, ms?: number): Promise<T> {
 function extractParentIdFromLinks(links: Litecom.Link[]): string | undefined {
     for (const link of links) {
         if (link.rel === 'parent') {
-            const x = link.href.split('/');
-            return x[x.length - 1];
+            return link.href.split('/').at(-1);
         }
     }
     return undefined;
