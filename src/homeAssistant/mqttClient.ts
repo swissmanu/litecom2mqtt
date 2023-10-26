@@ -2,9 +2,10 @@ import { MqttClient as Client, connectAsync } from 'mqtt';
 import { Config } from '../util/config.js';
 import { createAsyncDisposable } from '../util/createDisposable.js';
 import { Logger, log } from '../util/logger.js';
+import { HomeAssistantAnnouncement, HomeAssistantDeviceAnnouncer } from './devices/homeAssistantDevice.js';
 import { LightingCommand, LightingServiceMQTTHandler } from './lightingServiceMqttHandler.js';
 
-export class MqttClient {
+export class MqttClient implements HomeAssistantDeviceAnnouncer {
     private client: Client | undefined = undefined;
 
     constructor(
@@ -104,5 +105,9 @@ export class MqttClient {
 
         log.warning('Mqtt client is not initialized. Call init() before subscribe().');
         return createAsyncDisposable(() => Promise.resolve());
+    }
+
+    async announce(discoveryTopic: string, announcement: HomeAssistantAnnouncement) {
+        await this.publish(discoveryTopic, JSON.stringify(announcement));
     }
 }

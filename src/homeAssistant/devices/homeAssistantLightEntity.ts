@@ -1,33 +1,14 @@
-import { ZoneWithoutAvailableServices } from '../../litecom/interrogateLitecomSystem.js';
-import { Device, Zone } from '../../litecom/restClient/index.js';
 import { config } from '../../util/config.js';
-import { MqttClient } from '../mqttClient.js';
-import { AbstractEntity } from './abstractEntity.js';
+import { HomeAssistantEntity, HomeAssistantEntityType, LitecomServiceType } from './homeAssistantEntity.js';
 
 /**
  * @see https://www.home-assistant.io/integrations/light.mqtt/
  */
-export class LightEntity extends AbstractEntity {
-    constructor(
-        mqttClient: MqttClient,
-        zone: Zone,
-        parentZones: ReadonlyArray<ZoneWithoutAvailableServices>,
-        device?: Device,
-    ) {
-        super(mqttClient, zone, parentZones, device);
-    }
+export class HomeAssistantLightEntity extends HomeAssistantEntity {
+    override readonly homeAssistantEntityType: HomeAssistantEntityType = 'light';
+    override readonly litecomServiceType: LitecomServiceType = 'lighting';
 
-    public static readonly LitecomServiceType = 'lighting';
-
-    get homeAssistantEntityType(): 'light' {
-        return 'light';
-    }
-
-    get litecomServiceType(): 'lighting' {
-        return LightEntity.LitecomServiceType;
-    }
-
-    get homeAssistantCommandTopics(): Record<string, string> {
+    override get homeAssistantCommandTopics(): Record<string, string> {
         if (this.device) {
             return {
                 command_topic: `${config.LITECOM2MQTT_MQTT_TOPIC_PREFIX}/${this.zone.id}/devices/${this.objectId}/${this.litecomServiceType}/set`,
@@ -40,7 +21,7 @@ export class LightEntity extends AbstractEntity {
         };
     }
 
-    get homeAssistantEntityConfig(): Record<string, string | number | boolean> {
+    override get homeAssistantEntityConfig(): Record<string, string | number | boolean> {
         const shared = { brightness_scale: 100, on_command_type: 'brightness' };
 
         if (this.device) {

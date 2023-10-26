@@ -8,19 +8,19 @@ type AvailableServices = {
     scenes: false | ReadonlyArray<Scene>;
 };
 
-type Zone = AvailableServices & ZoneWithoutAvailableServices;
+export type Zone = AvailableServices & ZoneWithoutAvailableServices;
 
 export type ZoneWithoutAvailableServices = {
     zone: Litecom.Zone;
     parentZoneId?: string;
 };
 
-type Device = AvailableServices & {
+export type Device = AvailableServices & {
     device: Litecom.Device;
     parentZoneId?: string;
 };
 
-type Scene = {
+export type Scene = {
     id: number;
     name: string;
 };

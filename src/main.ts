@@ -1,11 +1,10 @@
-import { LightEntity } from './homeAssistant/entities/lightEntity.js';
+import { HomeAssistantDevice } from './homeAssistant/devices/homeAssistantDevice.js';
 import { LightingServiceMQTTHandler } from './homeAssistant/lightingServiceMqttHandler.js';
 import { MqttClient } from './homeAssistant/mqttClient.js';
 import { createLitecomMqttMirror } from './litecom/createLitecomMqttMirror.js';
 import { interrogateLitecomSystem } from './litecom/interrogateLitecomSystem.js';
 import * as Litecom from './litecom/restClient/index.js';
 import { config } from './util/config.js';
-import { getAllParentsForZone } from './util/getAllParentNamesForZone.js';
 import { log } from './util/logger.js';
 
 const mqttClient = new MqttClient(
@@ -29,23 +28,19 @@ for (const zone of [
     ...(config.LITECOM2MQTT_HOMEASSISTANT_ANNOUNCE_GROUPS ? groups : []),
     ...(config.LITECOM2MQTT_HOMEASSISTANT_ANNOUNCE_ROOMS ? rooms : []),
 ]) {
-    if (zone.lighting) {
-        const parentZones = getAllParentsForZone(zone, zoneById);
-        const entity = new LightEntity(mqttClient, zone.zone, parentZones);
-        await entity.announce();
-    }
+    const homeAssistantDevice = HomeAssistantDevice.fromLitecomZone(zone, zoneById, config, log);
+    await homeAssistantDevice.announceUsing(mqttClient);
 }
 
-for (const { device } of devices) {
-    const zoneIds = zoneIdsByDeviceId.get(device.id);
+for (const device of devices) {
+    const zoneIds = zoneIdsByDeviceId.get(device.device.id);
     if (zoneIds && zoneIds.length > 0) {
         const zone = zoneById.get(zoneIds[0]);
         if (zone) {
-            const parentZones = getAllParentsForZone(zone, zoneById);
-            const entity = new LightEntity(mqttClient, zone.zone, parentZones, device);
-            await entity.announce();
+            const homeAssistantDevice = HomeAssistantDevice.fromLitecomDevice(device, zone, zoneById, config, log);
+            await homeAssistantDevice.announceUsing(mqttClient);
         }
     } else {
-        log.warning(`No zone identifiers found for device "${device.name}"`);
+        log.warning(`No zone identifiers found for device "${device.device.name}"`);
     }
 }
