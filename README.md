@@ -45,6 +45,10 @@ NodeJS. You get the best developer experience with
 [devcontainer](https://containers.dev/); a
 [container configuration](./.devcontainer) is present.
 
+### Official Documentation
+
+-   https://resources.zumtobel.com/assets/downloads/litecom/manuals/LITECOM_REST_HB_en.pdf
+
 ### Update Litecom REST API Client
 
 https://www.npmjs.com/package/openapi-typescript-codegen
