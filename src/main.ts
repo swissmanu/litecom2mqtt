@@ -30,6 +30,7 @@ for (const zone of [
 ]) {
     const homeAssistantDevice = HomeAssistantDevice.fromLitecomZone(zone, zoneById, config, log);
     await homeAssistantDevice.announceUsing(mqttClient);
+    await mqttClient.subscribeToHomeAssistantDeviceCommandTopics(homeAssistantDevice);
 }
 
 for (const device of devices) {
@@ -39,6 +40,7 @@ for (const device of devices) {
         if (zone) {
             const homeAssistantDevice = HomeAssistantDevice.fromLitecomDevice(device, zone, zoneById, config, log);
             await homeAssistantDevice.announceUsing(mqttClient);
+            await mqttClient.subscribeToHomeAssistantDeviceCommandTopics(homeAssistantDevice);
         }
     } else {
         log.warning(`No zone identifiers found for device "${device.device.name}"`);

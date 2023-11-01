@@ -26,7 +26,7 @@ export interface HomeAssistantDeviceAnnouncer {
 }
 
 export class HomeAssistantDevice {
-    private readonly entities: HomeAssistantEntity[] = [];
+    public readonly entities: HomeAssistantEntity[] = [];
 
     private constructor(
         readonly id: string,

@@ -1,6 +1,5 @@
 import { Device, Zone } from '../../litecom/restClient/index.js';
 import { Config } from '../../util/config.js';
-import { log } from '../../util/logger.js';
 import { HomeAssistantAnnouncement, HomeAssistantDevice } from './homeAssistantDevice.js';
 
 export type HomeAssistantEntityType = 'light' | 'button' | 'cover' | 'select';
@@ -30,13 +29,6 @@ export abstract class HomeAssistantEntity {
 
     get uniqueId(): string {
         return `${this.objectId}_${this.litecomServiceType}`;
-    }
-
-    private subscribe() {
-        for (const topic of Object.values(this.homeAssistantCommandTopics)) {
-            log.debug(`Subscribe ${topic}`);
-            // this.mqttClient.subscribe(topic);
-        }
     }
 
     getHomeAssistantAnnouncement(homeAssistantDevice: HomeAssistantDevice): Omit<HomeAssistantAnnouncement, 'device'> {

@@ -110,4 +110,13 @@ export class MqttClient implements HomeAssistantDeviceAnnouncer {
     async announce(discoveryTopic: string, announcement: HomeAssistantAnnouncement) {
         await this.publish(discoveryTopic, JSON.stringify(announcement));
     }
+
+    async subscribeToHomeAssistantDeviceCommandTopics(device: HomeAssistantDevice) {
+        for (const entity of device.entities) {
+            for (const topic of Object.values(entity.homeAssistantCommandTopics)) {
+                log.debug(`Subscribe ${topic}`);
+                await this.subscribe(topic);
+            }
+        }
+    }
 }
