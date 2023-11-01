@@ -25,6 +25,14 @@ export type Scene = {
     name: string;
 };
 
+function isZone(zoneOrDevice: Zone | Device): zoneOrDevice is Zone {
+    return (zoneOrDevice as Zone).zone !== undefined;
+}
+
+export function idForZoneOrDevice(zoneOrDevice: Zone | Device): string {
+    return isZone(zoneOrDevice) ? zoneOrDevice.zone.id : zoneOrDevice.device.id;
+}
+
 type LitecomSystemInformation = {
     /**
      * All known zones. Might be empty if zones were not part of the interrogation.

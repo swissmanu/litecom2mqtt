@@ -1,11 +1,20 @@
 import { HomeAssistantDevice } from './homeAssistant/devices/homeAssistantDevice.js';
 import { LightingServiceMQTTHandler } from './homeAssistant/lightingServiceMqttHandler.js';
 import { MqttClient } from './homeAssistant/mqttClient.js';
+import { SceneServiceMQTTHandler } from './homeAssistant/sceneServiceMqttHandler.js';
 import { createLitecomMqttMirror } from './litecom/createLitecomMqttMirror.js';
-import { interrogateLitecomSystem } from './litecom/interrogateLitecomSystem.js';
+import { Scene, idForZoneOrDevice, interrogateLitecomSystem } from './litecom/interrogateLitecomSystem.js';
 import * as Litecom from './litecom/restClient/index.js';
 import { config } from './util/config.js';
 import { log } from './util/logger.js';
+
+const { zones, groups, rooms, devices, zoneIdsByDeviceId, zoneById } = await interrogateLitecomSystem(config);
+const scenesByZoneOrDeviceId: ReadonlyMap<string, ReadonlyArray<Scene>> = new Map(
+    [...zones, ...groups, ...rooms, ...devices].reduce<ReadonlyArray<[string, ReadonlyArray<Scene>]>>(
+        (acc, x) => (x.scenes ? [...acc, [idForZoneOrDevice(x), x.scenes]] : acc),
+        [],
+    ),
+);
 
 const mqttClient = new MqttClient(
     new LightingServiceMQTTHandler(
@@ -15,13 +24,19 @@ const mqttClient = new MqttClient(
         },
         log,
     ),
+    new SceneServiceMQTTHandler(
+        {
+            putSceneServiceByZone: Litecom.SceneServiceService.putSceneServiceByZone,
+            putSceneServiceByZoneAndDevice: Litecom.SceneServiceService.putSceneServiceByZoneAndDevice,
+        },
+        scenesByZoneOrDeviceId,
+        log,
+    ),
     log,
 );
 await mqttClient.init(config);
 
 await createLitecomMqttMirror(mqttClient);
-
-const { zones, groups, rooms, devices, zoneIdsByDeviceId, zoneById } = await interrogateLitecomSystem(config);
 
 for (const zone of [
     ...(config.LITECOM2MQTT_HOMEASSISTANT_ANNOUNCE_ZONES ? zones : []),

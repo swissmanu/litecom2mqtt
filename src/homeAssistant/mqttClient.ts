@@ -2,21 +2,27 @@ import { MqttClient as Client, connectAsync } from 'mqtt';
 import { Config } from '../util/config.js';
 import { createAsyncDisposable } from '../util/createDisposable.js';
 import { Logger, log } from '../util/logger.js';
-import { HomeAssistantAnnouncement, HomeAssistantDeviceAnnouncer } from './devices/homeAssistantDevice.js';
+import {
+    HomeAssistantAnnouncement,
+    HomeAssistantDevice,
+    HomeAssistantDeviceAnnouncer,
+} from './devices/homeAssistantDevice.js';
 import { LightingCommand, LightingServiceMQTTHandler } from './lightingServiceMqttHandler.js';
+import { SceneCommand, SceneServiceMQTTHandler } from './sceneServiceMqttHandler.js';
 
 export class MqttClient implements HomeAssistantDeviceAnnouncer {
     private client: Client | undefined = undefined;
 
     constructor(
         private readonly lightingHandler: LightingServiceMQTTHandler,
+        private readonly sceneHandler: SceneServiceMQTTHandler,
         private readonly log: Logger,
     ) {}
 
     async init(config: Config): Promise<AsyncDisposable> {
         const decoder = new TextDecoder();
 
-        // PREFIX/ZONE_ID/devices/DEVICE_ID/SERVICE_TYPE/COMMAND_TOPIC
+        // PREFIX/ZONE_ID/ZONE_ID/devices/DEVICE_ID/SERVICE_TYPE/COMMAND_TOPIC
         const deviceTopicRegex = new RegExp(`^${config.LITECOM2MQTT_MQTT_TOPIC_PREFIX}/(.*)/devices/(.*)/(.*)/(.*)$`);
 
         // PREFIX/ZONE_ID/SERVICE_TYPE/COMMAND_TOPIC
@@ -32,9 +38,9 @@ export class MqttClient implements HomeAssistantDeviceAnnouncer {
         );
 
         this.client.on('message', (topic: string, payloadBuffer: Buffer) => {
+            const match = topic.match(deviceTopicRegex);
             const payload = decoder.decode(payloadBuffer);
 
-            const match = topic.match(deviceTopicRegex);
             if (match) {
                 const [, zoneId, deviceId, serviceType, command] = match;
                 switch (serviceType) {
@@ -43,6 +49,13 @@ export class MqttClient implements HomeAssistantDeviceAnnouncer {
                             zoneId,
                             deviceId,
                             LightingCommand.parse({ command, payload }),
+                        );
+                        break;
+                    case 'scene':
+                        this.sceneHandler.handleDeviceCommand(
+                            zoneId,
+                            deviceId,
+                            SceneCommand.parse({ command, payload }),
                         );
                         break;
                     default:
@@ -65,6 +78,15 @@ export class MqttClient implements HomeAssistantDeviceAnnouncer {
                         this.lightingHandler.handleZoneCommand(
                             zoneId,
                             LightingCommand.parse({
+                                command,
+                                payload,
+                            }),
+                        );
+                        break;
+                    case 'scene':
+                        this.sceneHandler.handleZoneCommand(
+                            zoneId,
+                            SceneCommand.parse({
                                 command,
                                 payload,
                             }),

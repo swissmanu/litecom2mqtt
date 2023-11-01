@@ -22,11 +22,11 @@ export class HomeAssistantSceneEntity extends HomeAssistantEntity {
     override get homeAssistantCommandTopics(): Record<string, string> {
         if (this.device) {
             return {
-                command_topic: `${this.config.LITECOM2MQTT_MQTT_TOPIC_PREFIX}/${this.zone.id}/devices/${this.objectId}/${this.litecomServiceType}/set`,
+                command_topic: `${this.config.LITECOM2MQTT_MQTT_TOPIC_PREFIX}/${this.zone.id}/devices/${this.objectId}/${this.litecomServiceType}/activate`,
             };
         }
         return {
-            command_topic: `${this.config.LITECOM2MQTT_MQTT_TOPIC_PREFIX}/${this.zone.id}/${this.litecomServiceType}/set`,
+            command_topic: `${this.config.LITECOM2MQTT_MQTT_TOPIC_PREFIX}/${this.zone.id}/${this.litecomServiceType}/activate`,
         };
     }
 
