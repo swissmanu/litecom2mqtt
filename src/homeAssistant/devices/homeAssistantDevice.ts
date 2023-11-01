@@ -5,6 +5,7 @@ import { Logger } from '../../util/logger.js';
 import { HomeAssistantEntity } from './homeAssistantEntity.js';
 import { HomeAssistantLightEntity } from './homeAssistantLightEntity.js';
 import { HomeAssistantSceneEntity } from './homeAssistantSceneEntity.js';
+import { HomeAssistantSceneOutOfTuneEntity } from './homeAssistantSceneOutOfTuneEntity.js';
 
 export type HomeAssistantDeviceConfiguration = {
     name: string;
@@ -53,6 +54,7 @@ export class HomeAssistantDevice {
         }
         if (zone.scenes) {
             device.addEntity(new HomeAssistantSceneEntity(config, zone.scenes, zone.zone));
+            device.addEntity(new HomeAssistantSceneOutOfTuneEntity(config, zone.zone));
         }
 
         return device;
@@ -79,6 +81,7 @@ export class HomeAssistantDevice {
             homeAssistantDevice.addEntity(
                 new HomeAssistantSceneEntity(config, device.scenes, inZone.zone, device.device),
             );
+            homeAssistantDevice.addEntity(new HomeAssistantSceneOutOfTuneEntity(config, inZone.zone, device.device));
         }
 
         return homeAssistantDevice;
@@ -98,7 +101,7 @@ export class HomeAssistantDevice {
         this.entities.push(entity);
     }
 
-    public getHomeAssistantDeviceConfiguration(): HomeAssistantDeviceConfiguration {
+    private getHomeAssistantDeviceConfiguration(): HomeAssistantDeviceConfiguration {
         return {
             name: this.name,
             identifiers: this.id,

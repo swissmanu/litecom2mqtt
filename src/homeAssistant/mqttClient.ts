@@ -22,10 +22,10 @@ export class MqttClient implements HomeAssistantDeviceAnnouncer {
     async init(config: Config): Promise<AsyncDisposable> {
         const decoder = new TextDecoder();
 
-        // PREFIX/ZONE_ID/ZONE_ID/devices/DEVICE_ID/SERVICE_TYPE/COMMAND_TOPIC
+        // PREFIX/ZONE_ID/ZONE_ID/devices/DEVICE_ID/DATA_POINT_TYPE/COMMAND_TOPIC
         const deviceTopicRegex = new RegExp(`^${config.LITECOM2MQTT_MQTT_TOPIC_PREFIX}/(.*)/devices/(.*)/(.*)/(.*)$`);
 
-        // PREFIX/ZONE_ID/SERVICE_TYPE/COMMAND_TOPIC
+        // PREFIX/ZONE_ID/DATA_POINT_TYPE/COMMAND_TOPIC
         const zoneTopicRegex = new RegExp(`^${config.LITECOM2MQTT_MQTT_TOPIC_PREFIX}/(.*)/(.*)/(.*)$`);
 
         this.client = await connectAsync({
@@ -42,8 +42,8 @@ export class MqttClient implements HomeAssistantDeviceAnnouncer {
             const payload = decoder.decode(payloadBuffer);
 
             if (match) {
-                const [, zoneId, deviceId, serviceType, command] = match;
-                switch (serviceType) {
+                const [, zoneId, deviceId, dataPointType, command] = match;
+                switch (dataPointType) {
                     case 'lighting':
                         this.lightingHandler.handleDeviceCommand(
                             zoneId,
@@ -51,7 +51,7 @@ export class MqttClient implements HomeAssistantDeviceAnnouncer {
                             LightingCommand.parse({ command, payload }),
                         );
                         break;
-                    case 'scene':
+                    case 'activeScene':
                         this.sceneHandler.handleDeviceCommand(
                             zoneId,
                             deviceId,
@@ -59,10 +59,10 @@ export class MqttClient implements HomeAssistantDeviceAnnouncer {
                         );
                         break;
                     default:
-                        this.log.warning(`Cannot handle unknown serviceType "${serviceType}"`, {
+                        this.log.warning(`Cannot handle unknown datapoint type "${dataPointType}"`, {
                             zoneId,
                             deviceId,
-                            serviceType,
+                            serviceType: dataPointType,
                             command,
                             payload,
                         });
@@ -72,8 +72,8 @@ export class MqttClient implements HomeAssistantDeviceAnnouncer {
 
             const match1 = topic.match(zoneTopicRegex);
             if (match1) {
-                const [, zoneId, serviceType, command] = match1;
-                switch (serviceType) {
+                const [, zoneId, dataPointType, command] = match1;
+                switch (dataPointType) {
                     case 'lighting':
                         this.lightingHandler.handleZoneCommand(
                             zoneId,
@@ -83,7 +83,7 @@ export class MqttClient implements HomeAssistantDeviceAnnouncer {
                             }),
                         );
                         break;
-                    case 'scene':
+                    case 'activeScene':
                         this.sceneHandler.handleZoneCommand(
                             zoneId,
                             SceneCommand.parse({
@@ -93,9 +93,9 @@ export class MqttClient implements HomeAssistantDeviceAnnouncer {
                         );
                         break;
                     default:
-                        this.log.warning(`Cannot handle unknown serviceType "${serviceType}"`, {
+                        this.log.warning(`Cannot handle unknown datapoint type "${dataPointType}"`, {
                             zoneId,
-                            serviceType,
+                            serviceType: dataPointType,
                             command,
                             payload,
                         });

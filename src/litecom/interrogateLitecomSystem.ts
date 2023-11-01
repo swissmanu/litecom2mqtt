@@ -5,6 +5,7 @@ import * as Litecom from './restClient/index.js';
 type AvailableServices = {
     lighting: boolean;
     blinds: boolean;
+    slats: boolean;
     scenes: false | ReadonlyArray<Scene>;
 };
 
@@ -110,7 +111,10 @@ export async function interrogateLitecomSystem(config: Config): Promise<LitecomS
     Litecom.OpenAPI.TOKEN = config.LITECOM2MQTT_LITECOM_CONSUMER_API_TOKEN;
 
     log.debug('Fetching zones from Litecom...');
-    const systemZones = await throttled(() => Litecom.ZonesService.getZones());
+    // const systemZones = await throttled(() => Litecom.ZonesService.getZones());
+    const systemZones = [
+        await throttled(() => Litecom.ZonesService.getZoneById('8bfa53fa-8574-4239-88cf-5b18e5954d93')),
+    ];
     log.debug(`Fetched ${systemZones.length} zones from Litecom.`);
 
     for (const systemZone of systemZones) {
@@ -206,6 +210,7 @@ async function availableServices(
         lighting: services.findIndex((s) => s.type === Litecom.Identifiable.type.LIGHTING) !== -1,
         blinds: services.findIndex((s) => s.type === Litecom.Identifiable.type.BLIND) !== -1,
         scenes: hasSceneService && (await getScenes(zone, device)),
+        slats: services.findIndex((s) => s.type === Litecom.Identifiable.type.SLAT) !== -1,
     };
 }
 
