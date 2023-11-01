@@ -1,6 +1,6 @@
 {
     "name": "litecom2mqtt",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "Make Zumtobel Litecom CCD fully accessible through MQTT and discoverable by Home Assistant.",
     "main": "dist/index.js",
     "repository": "git@github.com:swissmanu/litecom2mqtt.git",
