@@ -3,7 +3,7 @@ import { Config } from '../../util/config.js';
 import { HomeAssistantAnnouncement, HomeAssistantDevice } from './homeAssistantDevice.js';
 
 export type HomeAssistantEntityType = 'light' | 'button' | 'cover' | 'select' | 'sensor';
-export type DataPointType = 'lighting' | 'activeScene' | 'sceneOutOfTune';
+export type DataPointType = 'lighting' | 'activeScene' | 'sceneOutOfTune' | 'cover';
 
 export abstract class HomeAssistantEntity {
     abstract readonly homeAssistantEntityType: HomeAssistantEntityType;
@@ -20,9 +20,7 @@ export abstract class HomeAssistantEntity {
         protected readonly config: Config,
         protected readonly zone: Zone,
         protected readonly device?: Device,
-    ) {
-        // this.subscribe();
-    }
+    ) {}
 
     get name(): string {
         return this.device?.name ?? this.zone.name;

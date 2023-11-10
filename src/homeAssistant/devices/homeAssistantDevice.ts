@@ -2,6 +2,7 @@ import { Device, Zone, ZoneWithoutAvailableServices } from '../../litecom/interr
 import { Config } from '../../util/config.js';
 import { getAllParentsForZone } from '../../util/getAllParentNamesForZone.js';
 import { Logger } from '../../util/logger.js';
+import { HomeAssistantCoverEntity } from './homeAssistantCoverEntity.js';
 import { HomeAssistantEntity } from './homeAssistantEntity.js';
 import { HomeAssistantLightEntity } from './homeAssistantLightEntity.js';
 import { HomeAssistantSceneEntity } from './homeAssistantSceneEntity.js';
@@ -56,6 +57,9 @@ export class HomeAssistantDevice {
             device.addEntity(new HomeAssistantSceneEntity(config, zone.scenes, zone.zone));
             device.addEntity(new HomeAssistantSceneOutOfTuneEntity(config, zone.zone));
         }
+        if (zone.blinds || zone.slats) {
+            device.addEntity(new HomeAssistantCoverEntity(config, zone.blinds, zone.slats, zone.zone));
+        }
 
         return device;
     }
@@ -82,6 +86,11 @@ export class HomeAssistantDevice {
                 new HomeAssistantSceneEntity(config, device.scenes, inZone.zone, device.device),
             );
             homeAssistantDevice.addEntity(new HomeAssistantSceneOutOfTuneEntity(config, inZone.zone, device.device));
+        }
+        if (device.blinds || device.slats) {
+            homeAssistantDevice.addEntity(
+                new HomeAssistantCoverEntity(config, device.blinds, device.slats, inZone.zone, device.device),
+            );
         }
 
         return homeAssistantDevice;

@@ -1,3 +1,4 @@
+import { CoverServiceMQTTHandler } from './homeAssistant/coverServiceMqttHandler.js';
 import { HomeAssistantDevice } from './homeAssistant/devices/homeAssistantDevice.js';
 import { LightingServiceMQTTHandler } from './homeAssistant/lightingServiceMqttHandler.js';
 import { MqttClient } from './homeAssistant/mqttClient.js';
@@ -30,6 +31,17 @@ const mqttClient = new MqttClient(
             putSceneServiceByZoneAndDevice: Litecom.SceneServiceService.putSceneServiceByZoneAndDevice,
         },
         scenesByZoneOrDeviceId,
+        log,
+    ),
+    new CoverServiceMQTTHandler(
+        {
+            putBlindServiceByZone: Litecom.BlindsServiceService.putBlindServiceByZone,
+            putBlindsServiceByZoneAndDevice: Litecom.BlindsServiceService.putBlindServiceByZoneAndDevice,
+        },
+        {
+            putSlatServiceByZone: Litecom.SlatsServiceService.putSlatServiceByZone,
+            putSlatServiceByZoneAndDevice: Litecom.SlatsServiceService.putSlatServiceByZoneAndDevice,
+        },
         log,
     ),
     log,

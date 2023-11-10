@@ -2,6 +2,7 @@ import { MqttClient as Client, connectAsync } from 'mqtt';
 import { Config } from '../util/config.js';
 import { createAsyncDisposable } from '../util/createDisposable.js';
 import { Logger, log } from '../util/logger.js';
+import { CoverCommand, CoverServiceMQTTHandler } from './coverServiceMqttHandler.js';
 import {
     HomeAssistantAnnouncement,
     HomeAssistantDevice,
@@ -16,6 +17,7 @@ export class MqttClient implements HomeAssistantDeviceAnnouncer {
     constructor(
         private readonly lightingHandler: LightingServiceMQTTHandler,
         private readonly sceneHandler: SceneServiceMQTTHandler,
+        private readonly coverHandler: CoverServiceMQTTHandler,
         private readonly log: Logger,
     ) {}
 
@@ -58,6 +60,13 @@ export class MqttClient implements HomeAssistantDeviceAnnouncer {
                             SceneCommand.parse({ command, payload }),
                         );
                         break;
+                    case 'cover':
+                        this.coverHandler.handleDeviceCommand(
+                            zoneId,
+                            deviceId,
+                            CoverCommand.parse({ command, payload }),
+                        );
+                        break;
                     default:
                         this.log.warning(`Cannot handle unknown datapoint type "${dataPointType}"`, {
                             zoneId,
@@ -91,6 +100,9 @@ export class MqttClient implements HomeAssistantDeviceAnnouncer {
                                 payload,
                             }),
                         );
+                        break;
+                    case 'cover':
+                        this.coverHandler.handleZoneCommand(zoneId, CoverCommand.parse({ command, payload }));
                         break;
                     default:
                         this.log.warning(`Cannot handle unknown datapoint type "${dataPointType}"`, {
