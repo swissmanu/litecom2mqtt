@@ -37,6 +37,12 @@ export class CoverServiceMQTTHandler {
     }
 
     async handleDeviceCommand(zoneId: string, deviceId: string, { command, payload }: CoverCommand): Promise<void> {
-        this.log.warning('Not Implemented');
+        switch (command) {
+            case 'move': {
+                await this.blindsLitecomAdapter.putBlindsServiceByZoneAndDevice(zoneId, deviceId, {
+                    command: payload as putMotorService.command, // cast should be fine. HomeAssistantCoverEntity announces this enums' values to Home Assistant as payloads
+                });
+            }
+        }
     }
 }
