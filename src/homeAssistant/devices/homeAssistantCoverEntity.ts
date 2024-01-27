@@ -1,5 +1,7 @@
 import * as Litecom from '../../litecom/restClient/index.js';
-import { Config, config } from '../../util/config.js';
+import { LitecomStateMqttTopicFactory } from '../../litecom/stateMqttTopicFactory.js';
+import { Config } from '../../util/config.js';
+import { CoverServiceMQTTHandler } from '../coverServiceMqttHandler.js';
 import { DataPointType, HomeAssistantEntity, HomeAssistantEntityType } from './homeAssistantEntity.js';
 
 /**
@@ -20,76 +22,43 @@ export class HomeAssistantCoverEntity extends HomeAssistantEntity {
     }
 
     override get homeAssistantCommandTopics(): Record<string, string> {
-        if (this.device) {
-            return {
-                ...(this.hasBlinds
-                    ? {
-                          command_topic: `${config.LITECOM2MQTT_MQTT_TOPIC_PREFIX}/${this.zone.id}/devices/${this.objectId}/${this.dataPointType}/move-blind`,
-                          set_position_topic: `${config.LITECOM2MQTT_MQTT_TOPIC_PREFIX}/${this.zone.id}/devices/${this.objectId}/${this.dataPointType}/position-blind`,
-                      }
-                    : {}),
-                ...(this.hasSlats
-                    ? {
-                          tilt_command_topic: `${config.LITECOM2MQTT_MQTT_TOPIC_PREFIX}/${this.zone.id}/devices/${this.objectId}/${this.dataPointType}/position-slat`,
-                      }
-                    : {}),
-            };
-        }
         return {
-            ...(this.hasBlinds
-                ? {
-                      command_topic: `${config.LITECOM2MQTT_MQTT_TOPIC_PREFIX}/${this.zone.id}/${this.dataPointType}/move-blind`,
-                      set_position_topic: `${config.LITECOM2MQTT_MQTT_TOPIC_PREFIX}/${this.zone.id}/${this.dataPointType}/position-blind`,
-                  }
-                : {}),
-            ...(this.hasSlats
-                ? {
-                      tilt_command_topic: `${config.LITECOM2MQTT_MQTT_TOPIC_PREFIX}/${this.zone.id}/${this.dataPointType}/position-slat`,
-                  }
-                : {}),
+            ...(this.hasBlinds &&
+                CoverServiceMQTTHandler.createHomeAssistantCommandTopicsForBlind(
+                    this.config,
+                    this.zone.id,
+                    this.device?.id,
+                    this.dataPointType,
+                )),
+            ...(this.hasSlats &&
+                CoverServiceMQTTHandler.createHomeAssistantCommandTopicsForSlat(
+                    this.config,
+                    this.zone.id,
+                    this.device?.id,
+                    this.dataPointType,
+                )),
         };
     }
 
     override get homeAssistantEntityConfig(): Record<string, string | number | boolean> {
-        const shared = {
-            name: 'Cover',
-            position_closed: 100,
-            position_open: 0,
-            payload_open: Litecom.putMotorService.command.OPEN,
-            payload_close: Litecom.putMotorService.command.CLOSE,
-            payload_stop: Litecom.putMotorService.command.STOP,
-            tilt_command_template: '{{ 100 - tilt_position }}',
-            tilt_status_template: '{{ 100 - value }}',
-        };
-
-        if (this.device) {
-            return {
-                ...shared,
-                ...(this.hasBlinds
-                    ? {
-                          position_topic: `${config.LITECOM2MQTT_LITECOM_STATE_MQTT_TOPIC_PREFIX}/zones/${this.zone.id}/devices/${this.device.id}/services/blind/position`,
-                      }
-                    : {}),
-                ...(this.hasSlats
-                    ? {
-                          tilt_status_topic: `${config.LITECOM2MQTT_LITECOM_STATE_MQTT_TOPIC_PREFIX}/zones/${this.zone.id}/devices/${this.device.id}/services/slat/position`,
-                      }
-                    : {}),
-            };
-        }
-
+        const stateTopicFactory = new LitecomStateMqttTopicFactory(this.config, this.zone.id, this.device?.id);
         return {
-            ...shared,
-            ...(this.hasBlinds
-                ? {
-                      position_topic: `${config.LITECOM2MQTT_LITECOM_STATE_MQTT_TOPIC_PREFIX}/zones/${this.zone.id}/services/blind/position`,
-                  }
-                : {}),
-            ...(this.hasSlats
-                ? {
-                      tilt_status_topic: `${config.LITECOM2MQTT_LITECOM_STATE_MQTT_TOPIC_PREFIX}/zones/${this.zone.id}/services/slat/position`,
-                  }
-                : {}),
+            name: 'Cover',
+
+            ...(this.hasBlinds && {
+                position_closed: 100,
+                position_open: 0,
+                payload_open: Litecom.putMotorService.command.OPEN,
+                payload_close: Litecom.putMotorService.command.CLOSE,
+                payload_stop: Litecom.putMotorService.command.STOP,
+                position_topic: stateTopicFactory.topicServiceWithValue('blind', 'position'),
+            }),
+
+            ...(this.hasSlats && {
+                tilt_command_template: '{{ 100 - tilt_position }}',
+                tilt_status_template: '{{ 100 - value }}',
+                tilt_status_topic: stateTopicFactory.topicServiceWithValue('slat', 'position'),
+            }),
         };
     }
 }

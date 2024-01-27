@@ -1,6 +1,7 @@
 import { Device, Zone } from '../../litecom/restClient/index.js';
+import { LitecomStateMqttTopicFactory } from '../../litecom/stateMqttTopicFactory.js';
 import { Config } from '../../util/config.js';
-import { HomeAssistantEntity, HomeAssistantEntityType, DataPointType } from './homeAssistantEntity.js';
+import { DataPointType, HomeAssistantEntity, HomeAssistantEntityType } from './homeAssistantEntity.js';
 
 /**
  * @see https://www.home-assistant.io/integrations/sensor.mqtt/
@@ -18,21 +19,11 @@ export class HomeAssistantSceneOutOfTuneEntity extends HomeAssistantEntity {
     }
 
     override get homeAssistantEntityConfig(): Record<string, string | number | boolean | string[]> {
-        const shared = {
+        const stateTopicFactory = new LitecomStateMqttTopicFactory(this.config, this.zone.id, this.device?.id);
+        return {
             icon: 'mdi:tune-variant',
             name: 'Scene Out Of Tune',
-        };
-
-        if (this.device) {
-            return {
-                ...shared,
-                state_topic: `${this.config.LITECOM2MQTT_LITECOM_STATE_MQTT_TOPIC_PREFIX}/zones/${this.zone.id}/devices/${this.device.id}/services/scene/outOfTune`,
-            };
-        }
-
-        return {
-            ...shared,
-            state_topic: `${this.config.LITECOM2MQTT_LITECOM_STATE_MQTT_TOPIC_PREFIX}/zones/${this.zone.id}/services/scene/outOfTune`,
+            state_topic: stateTopicFactory.topicServiceWithValue('scene', 'outOfTune'),
         };
     }
 }

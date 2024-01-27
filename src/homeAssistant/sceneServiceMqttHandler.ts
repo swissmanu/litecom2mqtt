@@ -1,16 +1,21 @@
 import { z } from 'zod';
 import { Scene } from '../litecom/interrogateLitecomSystem.js';
 import type { SceneServiceService } from '../litecom/restClient/index.js';
+import { Config } from '../util/config.js';
 import { Logger } from '../util/logger.js';
+import { HomeAssistantCommandMqttTopicFactory } from './commandMqttTopicFactory.js';
+import { DataPointType } from './devices/homeAssistantEntity.js';
 
 export interface LitecomSceneServiceAdapter {
     putSceneServiceByZone: (typeof SceneServiceService)['putSceneServiceByZone'];
     putSceneServiceByZoneAndDevice: (typeof SceneServiceService)['putSceneServiceByZoneAndDevice'];
 }
 
+const ACTIVATE_COMMAND = 'activate';
+
 export const SceneCommand = z.discriminatedUnion('command', [
     z.object({
-        command: z.literal('activate'),
+        command: z.literal(ACTIVATE_COMMAND),
         payload: z.string(),
     }),
 ]);
@@ -23,9 +28,21 @@ export class SceneServiceMQTTHandler {
         private readonly log: Logger,
     ) {}
 
+    public static createHomeAssistantCommandTopics(
+        config: Config,
+        zoneId: string,
+        deviceId: string | undefined,
+        dataPointType: DataPointType,
+    ) {
+        const factory = new HomeAssistantCommandMqttTopicFactory(config, zoneId, deviceId, dataPointType);
+        return {
+            command_topic: factory.topicForCommand(ACTIVATE_COMMAND),
+        };
+    }
+
     async handleZoneCommand(zoneId: string, { command, payload }: SceneCommand): Promise<void> {
         switch (command) {
-            case 'activate': {
+            case ACTIVATE_COMMAND: {
                 const scenes = this.scenesByZoneOrDeviceId.get(zoneId);
                 if (!scenes) {
                     this.log.error(`Could not find scenes for zone "${zoneId}"`);
@@ -48,7 +65,7 @@ export class SceneServiceMQTTHandler {
 
     async handleDeviceCommand(zoneId: string, deviceId: string, { command, payload }: SceneCommand): Promise<void> {
         switch (command) {
-            case 'activate': {
+            case ACTIVATE_COMMAND: {
                 const scenes = this.scenesByZoneOrDeviceId.get(deviceId);
                 if (!scenes) {
                     this.log.error(`Could not find scenes for device "${deviceId}"`);
