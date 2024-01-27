@@ -36,6 +36,7 @@
 ## Caveats
 
 -   When setting a value of a device explicitly, Litecom does not propagate that value to its parent hierarchy (i.e., groups, rooms, and zones.).
+-   Setting a scene for a room with a Circle device, `activeScene` for that room becomes `null`. 🧐 Maybe there's a way how we can compensate for this?
 
 ## Development
 

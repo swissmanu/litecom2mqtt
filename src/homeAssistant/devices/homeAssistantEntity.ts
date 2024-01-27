@@ -7,7 +7,17 @@ export type DataPointType = 'lighting' | 'activeScene' | 'sceneOutOfTune' | 'cov
 
 export abstract class HomeAssistantEntity {
     abstract readonly homeAssistantEntityType: HomeAssistantEntityType;
+
+    /**
+     * A set of MQTT topics used by Home Assistant to control this entity. These topics are included in the Home
+     * Assistant entity configuration. litecom2mqtt will subscribe to them and translates commands to the Litecom REST
+     * API.
+     */
     abstract readonly homeAssistantCommandTopics: Record<string, string>;
+
+    /**
+     * Home Assistant entity configuration for this entity.
+     */
     abstract readonly homeAssistantEntityConfig: Record<string, string | number | boolean | string[]>;
 
     /**
