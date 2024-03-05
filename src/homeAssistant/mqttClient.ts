@@ -143,7 +143,7 @@ export class MqttClient implements HomeAssistantDeviceAnnouncer {
     }
 
     async announce(discoveryTopic: string, announcement: HomeAssistantAnnouncement) {
-        this.log.debug(`Announce ${this.retainAnnouncements ? 'retained' : ''}${discoveryTopic}`, {
+        this.log.debug(`Announce${this.retainAnnouncements ? ' retained ' : ' '}${discoveryTopic}`, {
             discoveryTopic,
             announcement,
             retain: this.retainAnnouncements,
