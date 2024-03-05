@@ -28,6 +28,7 @@
 | `LITECOM2MQTT_HOMEASSISTANT_ANNOUNCE_GROUPS`             | Optional. If `true`, Litecom groups and their services are announced to Home Assistant.<br />Default value: `false`                           |
 | `LITECOM2MQTT_HOMEASSISTANT_ANNOUNCE_ROOMS`              | Optional. If `true`, Litecom rooms and their services are announced to Home Assistant.<br />Default value: `false`                            |
 | `LITECOM2MQTT_HOMEASSISTANT_ANNOUNCE_ZONES`              | Optional. If `true`, Litecom zones and their services are announced to Home Assistant.<br />Default value: `false`                            |
+| `LITECOM2MQTT_HOMEASSISTANT_RETAIN_ANNOUNCEMENTS`        | Optional. If `true`, Home Assistant announcement MQTT messages are retained.<br />Default value: `false`                                      |
 
 ## System Details
 

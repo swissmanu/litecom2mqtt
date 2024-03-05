@@ -141,7 +141,6 @@ export class HomeAssistantDevice {
         );
 
         for (const [discoveryTopic, announcment] of announcments) {
-            this.log.debug(`Announce ${discoveryTopic}`, { discoveryTopic, announcment });
             await announcer.announce(discoveryTopic, announcment);
         }
     }

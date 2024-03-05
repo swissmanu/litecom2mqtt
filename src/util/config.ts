@@ -24,6 +24,7 @@ const Config = z.object({
     LITECOM2MQTT_HOMEASSISTANT_ANNOUNCE_GROUPS: z.string().optional().transform(stringToBoolean),
     LITECOM2MQTT_HOMEASSISTANT_ANNOUNCE_ROOMS: z.string().optional().transform(stringToBoolean),
     LITECOM2MQTT_HOMEASSISTANT_ANNOUNCE_ZONES: z.string().optional().transform(stringToBoolean),
+    LITECOM2MQTT_HOMEASSISTANT_RETAIN_ANNOUNCEMENTS: z.string().optional().transform(stringToBoolean),
 });
 export type Config = z.infer<typeof Config>;
 

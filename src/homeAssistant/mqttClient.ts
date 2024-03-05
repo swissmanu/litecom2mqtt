@@ -18,6 +18,7 @@ export class MqttClient implements HomeAssistantDeviceAnnouncer {
         private readonly lightingHandler: LightingServiceMQTTHandler,
         private readonly sceneHandler: SceneServiceMQTTHandler,
         private readonly coverHandler: CoverServiceMQTTHandler,
+        private readonly retainAnnouncements: boolean,
         private readonly log: Logger,
     ) {}
 
@@ -142,7 +143,12 @@ export class MqttClient implements HomeAssistantDeviceAnnouncer {
     }
 
     async announce(discoveryTopic: string, announcement: HomeAssistantAnnouncement) {
-        await this.publish(discoveryTopic, JSON.stringify(announcement));
+        this.log.debug(`Announce ${this.retainAnnouncements ? 'retained' : ''}${discoveryTopic}`, {
+            discoveryTopic,
+            announcement,
+            retain: this.retainAnnouncements,
+        });
+        await this.publish(discoveryTopic, JSON.stringify(announcement), { retain: this.retainAnnouncements });
     }
 
     async subscribeToHomeAssistantDeviceCommandTopics(device: HomeAssistantDevice) {

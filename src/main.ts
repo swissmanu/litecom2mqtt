@@ -44,6 +44,7 @@ const mqttClient = new MqttClient(
         },
         log,
     ),
+    config.LITECOM2MQTT_HOMEASSISTANT_RETAIN_ANNOUNCEMENTS,
     log,
 );
 await mqttClient.init(config);
