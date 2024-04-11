@@ -7,6 +7,14 @@
 
 ## Usage
 
+### With Docker
+
+```shell
+docker run ghcr.io/swissmanu/litecom2mqtt/litecom2mqtt:latest
+```
+
+Pass configuration to the litecom2mqtt container using [Dockers `-e` parameter](https://docs.docker.com/engine/reference/run/#environment-variables) as environment variables. Please refer to the "Configuration" section below for available configuration parameters.
+
 ### Configuration
 
 `litecom2mqtt` is configured using environment variables. All environment variables not declared as
