@@ -85,5 +85,5 @@ export class Log implements Logger {
 }
 
 export const log = new Log(LogLevelSchema.parse(config.LITECOM2MQTT_LOG_LEVEL), [
-    async (_, timestamp, message) => console.log(timestamp, message),
+    async (_, timestamp, message) => console.log(new Date(timestamp).toISOString(), message),
 ]);
