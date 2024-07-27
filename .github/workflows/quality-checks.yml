@@ -9,7 +9,7 @@ on:
     workflow_call:
 
 env:
-    NODE_VERSION: 18.18.0
+    NODE_VERSION: 20
 
 jobs:
     quality-checks:
