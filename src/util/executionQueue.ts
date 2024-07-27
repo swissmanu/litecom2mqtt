@@ -1,9 +1,10 @@
-import { Logger } from './logger';
+import { Logger } from './logger.js';
 
 type QueueableFunction = () => Promise<void>;
 
 export class ExecutionQueue {
     private queue: (() => void)[] = [];
+    private running = false;
 
     constructor(
         private readonly log: Logger,
@@ -13,15 +14,19 @@ export class ExecutionQueue {
     queueExecution(fn: QueueableFunction): void {
         this.log.debug(`Queue function for execution. Queue size: ${this.queue.length + 1}`);
 
-        this.queue.push(() => {
-            setTimeout(async () => {
+        this.queue.push(async () => {
+            try {
                 await fn();
+                await new Promise((resolve) => setTimeout(resolve, this.delayInMilliseconds));
+            } catch (e) {
+                this.log.error(`Queued function failed during execution: ${e}`, { error: JSON.stringify(e) });
+            } finally {
                 this.log.debug(`Function executed`);
                 this.checkQueue();
-            }, this.delayInMilliseconds);
+            }
         });
 
-        if (this.queue.length === 1) {
+        if (!this.running) {
             this.checkQueue();
         }
     }
@@ -30,8 +35,11 @@ export class ExecutionQueue {
         this.log.debug(`Checking Queue. Queue size ${this.queue.length}`);
         const fn = this.queue.shift();
         if (fn) {
+            this.running = true;
             this.log.debug(`Execute function. Left in queue: ${this.queue.length}`);
             fn();
+        } else {
+            this.running = false;
         }
     }
 }
