@@ -4,6 +4,7 @@ import { Config } from '../util/config.js';
 import { Logger } from '../util/logger.js';
 import { HomeAssistantCommandMqttTopicFactory } from './commandMqttTopicFactory.js';
 import { DataPointType } from './devices/homeAssistantEntity.js';
+import { ExecutionQueue } from '../util/executionQueue.js';
 
 export interface LitecomBlindsServiceAdapter {
     putBlindServiceByZone: (typeof BlindsServiceService)['putBlindServiceByZone'];
@@ -38,6 +39,7 @@ export class CoverServiceMQTTHandler {
     constructor(
         private readonly blindsLitecomAdapter: LitecomBlindsServiceAdapter,
         private readonly slatsLitecomAdapter: LitecomSlatsServiceAdapter,
+        private readonly queue: ExecutionQueue,
         private readonly log: Logger,
     ) {}
 
@@ -69,20 +71,26 @@ export class CoverServiceMQTTHandler {
     async handleZoneCommand(zoneId: string, { command, payload }: CoverCommand): Promise<void> {
         switch (command) {
             case MOVE_BLIND_COMMAND:
-                await this.blindsLitecomAdapter.putBlindServiceByZone(zoneId, {
-                    command: payload as putMotorService.command, // cast should be fine. HomeAssistantCoverEntity announces this enums' values to Home Assistant as payloads
+                this.queue.queueExecution(async () => {
+                    await this.blindsLitecomAdapter.putBlindServiceByZone(zoneId, {
+                        command: payload as putMotorService.command, // cast should be fine. HomeAssistantCoverEntity announces this enums' values to Home Assistant as payloads
+                    });
                 });
                 break;
             case POSITION_BLIND_COMMAND:
-                await this.blindsLitecomAdapter.putBlindServiceByZone(zoneId, {
-                    command: putMotorService.command.SET_POSITION,
-                    position: payload,
+                this.queue.queueExecution(async () => {
+                    await this.blindsLitecomAdapter.putBlindServiceByZone(zoneId, {
+                        command: putMotorService.command.SET_POSITION,
+                        position: payload,
+                    });
                 });
                 break;
             case POSITION_SLAT_COMMAND:
-                await this.slatsLitecomAdapter.putSlatServiceByZone(zoneId, {
-                    command: putMotorService.command.SET_POSITION,
-                    position: payload,
+                this.queue.queueExecution(async () => {
+                    await this.slatsLitecomAdapter.putSlatServiceByZone(zoneId, {
+                        command: putMotorService.command.SET_POSITION,
+                        position: payload,
+                    });
                 });
                 break;
         }
@@ -91,20 +99,26 @@ export class CoverServiceMQTTHandler {
     async handleDeviceCommand(zoneId: string, deviceId: string, { command, payload }: CoverCommand): Promise<void> {
         switch (command) {
             case MOVE_BLIND_COMMAND:
-                await this.blindsLitecomAdapter.putBlindsServiceByZoneAndDevice(zoneId, deviceId, {
-                    command: payload as putMotorService.command, // cast should be fine. HomeAssistantCoverEntity announces this enums' values to Home Assistant as payloads
+                this.queue.queueExecution(async () => {
+                    await this.blindsLitecomAdapter.putBlindsServiceByZoneAndDevice(zoneId, deviceId, {
+                        command: payload as putMotorService.command, // cast should be fine. HomeAssistantCoverEntity announces this enums' values to Home Assistant as payloads
+                    });
                 });
                 break;
             case POSITION_BLIND_COMMAND:
-                await this.blindsLitecomAdapter.putBlindsServiceByZoneAndDevice(zoneId, deviceId, {
-                    command: putMotorService.command.SET_POSITION,
-                    position: payload,
+                this.queue.queueExecution(async () => {
+                    await this.blindsLitecomAdapter.putBlindsServiceByZoneAndDevice(zoneId, deviceId, {
+                        command: putMotorService.command.SET_POSITION,
+                        position: payload,
+                    });
                 });
                 break;
             case POSITION_SLAT_COMMAND:
-                await this.slatsLitecomAdapter.putSlatServiceByZoneAndDevice(zoneId, deviceId, {
-                    command: putMotorService.command.SET_POSITION,
-                    position: payload,
+                this.queue.queueExecution(async () => {
+                    await this.slatsLitecomAdapter.putSlatServiceByZoneAndDevice(zoneId, deviceId, {
+                        command: putMotorService.command.SET_POSITION,
+                        position: payload,
+                    });
                 });
                 break;
         }

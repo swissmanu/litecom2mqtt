@@ -1,3 +1,4 @@
+import { ImmediateExecutionQueue } from '../util/testing/immedateExecutionQueue.js';
 import { NoopLogger } from '../util/testing/noopLogger.js';
 import { LightingServiceMQTTHandler } from './lightingServiceMqttHandler.js';
 
@@ -13,6 +14,7 @@ describe('LightingServiceMQTTHandler', () => {
             putLightingServiceByZone: fakes.putLightingServiceByZone,
             putLightingServiceByZoneAndDevice: fakes.putLightingServiceByZoneAndDevice,
         },
+        ImmediateExecutionQueue,
         NoopLogger,
     );
 

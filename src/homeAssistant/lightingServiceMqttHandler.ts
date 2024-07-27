@@ -4,6 +4,7 @@ import { Config } from '../util/config.js';
 import { Logger } from '../util/logger.js';
 import { HomeAssistantCommandMqttTopicFactory } from './commandMqttTopicFactory.js';
 import { DataPointType } from './devices/homeAssistantEntity.js';
+import { ExecutionQueue } from '../util/executionQueue.js';
 
 const SET_COMMAND = 'set';
 const BRIGHTNESS_COMMAND = 'brightness';
@@ -28,6 +29,7 @@ type LightingCommand = z.infer<typeof LightingCommand>;
 export class LightingServiceMQTTHandler {
     constructor(
         private readonly litecomAdapter: LitecomLightingServiceAdapter,
+        private readonly queue: ExecutionQueue,
         private readonly log: Logger,
     ) {}
 
@@ -48,15 +50,18 @@ export class LightingServiceMQTTHandler {
         switch (command) {
             case SET_COMMAND:
                 this.log.debug(`Turn zone "${zoneId}" ${payload}`);
-                await this.litecomAdapter.putLightingServiceByZone(zoneId, {
-                    intensity: payload === 'ON' ? 100 : 0,
+                this.queue.queueExecution(async () => {
+                    await this.litecomAdapter.putLightingServiceByZone(zoneId, {
+                        intensity: payload === 'ON' ? 100 : 0,
+                    });
                 });
                 break;
             case BRIGHTNESS_COMMAND: {
                 this.log.debug(`Set brigthness for zone "${zoneId}" to ${payload}`);
-
-                await this.litecomAdapter.putLightingServiceByZone(zoneId, {
-                    intensity: payload,
+                this.queue.queueExecution(async () => {
+                    await this.litecomAdapter.putLightingServiceByZone(zoneId, {
+                        intensity: payload,
+                    });
                 });
 
                 break;
@@ -68,15 +73,18 @@ export class LightingServiceMQTTHandler {
         switch (command) {
             case SET_COMMAND:
                 this.log.debug(`Turn device "${deviceId}" ${payload}`);
-                await this.litecomAdapter.putLightingServiceByZoneAndDevice(zoneId, deviceId, {
-                    intensity: payload === 'ON' ? 100 : 0,
+                this.queue.queueExecution(async () => {
+                    await this.litecomAdapter.putLightingServiceByZoneAndDevice(zoneId, deviceId, {
+                        intensity: payload === 'ON' ? 100 : 0,
+                    });
                 });
                 break;
             case BRIGHTNESS_COMMAND: {
                 this.log.debug(`Set brigthness for device "${deviceId}" to ${payload}`);
-
-                await this.litecomAdapter.putLightingServiceByZoneAndDevice(zoneId, deviceId, {
-                    intensity: payload,
+                this.queue.queueExecution(async () => {
+                    await this.litecomAdapter.putLightingServiceByZoneAndDevice(zoneId, deviceId, {
+                        intensity: payload,
+                    });
                 });
                 break;
             }

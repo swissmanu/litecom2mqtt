@@ -1,3 +1,4 @@
+import { ImmediateExecutionQueue } from '../util/testing/immedateExecutionQueue.js';
 import { NoopLogger } from '../util/testing/noopLogger.js';
 import { SceneServiceMQTTHandler } from './sceneServiceMqttHandler.js';
 
@@ -17,6 +18,7 @@ describe('SceneServiceMQTTHandler', () => {
             [zoneId, [{ id: 42, name: 'Zone Scene' }]],
             [deviceId, [{ id: 720, name: 'Device Scene' }]],
         ]),
+        ImmediateExecutionQueue,
         NoopLogger,
     );
 

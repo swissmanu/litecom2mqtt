@@ -5,6 +5,7 @@ import { Config } from '../util/config.js';
 import { Logger } from '../util/logger.js';
 import { HomeAssistantCommandMqttTopicFactory } from './commandMqttTopicFactory.js';
 import { DataPointType } from './devices/homeAssistantEntity.js';
+import { ExecutionQueue } from '../util/executionQueue.js';
 
 export interface LitecomSceneServiceAdapter {
     putSceneServiceByZone: (typeof SceneServiceService)['putSceneServiceByZone'];
@@ -25,6 +26,7 @@ export class SceneServiceMQTTHandler {
     constructor(
         private readonly litecomAdapter: LitecomSceneServiceAdapter,
         private readonly scenesByZoneOrDeviceId: ReadonlyMap<string, ReadonlyArray<Scene>>,
+        private readonly queue: ExecutionQueue,
         private readonly log: Logger,
     ) {}
 
@@ -52,8 +54,10 @@ export class SceneServiceMQTTHandler {
                         this.log.error(`Could not find scene "${payload}" for zone "${zoneId}"`);
                     } else {
                         this.log.debug(`Activate scene "${payload}" (${scene.id}) in zone "${zoneId}"`);
-                        await this.litecomAdapter.putSceneServiceByZone(zoneId, {
-                            activeScene: scene.id,
+                        this.queue.queueExecution(async () => {
+                            await this.litecomAdapter.putSceneServiceByZone(zoneId, {
+                                activeScene: scene.id,
+                            });
                         });
                     }
                 }
@@ -75,8 +79,10 @@ export class SceneServiceMQTTHandler {
                         this.log.error(`Could not find scene "${payload}" for device "${deviceId}"`);
                     } else {
                         this.log.debug(`Activate scene "${payload}" for device "${deviceId}" in zone "${zoneId}"`);
-                        await this.litecomAdapter.putSceneServiceByZoneAndDevice(zoneId, deviceId, {
-                            activeScene: scene.id,
+                        this.queue.queueExecution(async () => {
+                            await this.litecomAdapter.putSceneServiceByZoneAndDevice(zoneId, deviceId, {
+                                activeScene: scene.id,
+                            });
                         });
                     }
                 }

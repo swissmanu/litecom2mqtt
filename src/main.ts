@@ -7,6 +7,7 @@ import { createLitecomMqttMirror } from './litecom/createLitecomMqttMirror.js';
 import { Scene, idForZoneOrDevice, interrogateLitecomSystem } from './litecom/interrogateLitecomSystem.js';
 import * as Litecom from './litecom/restClient/index.js';
 import { config } from './util/config.js';
+import { ExecutionQueue } from './util/executionQueue.js';
 import { log } from './util/logger.js';
 
 const { zones, groups, rooms, devices, zoneIdsByDeviceId, zoneById } = await interrogateLitecomSystem(config);
@@ -17,12 +18,14 @@ const scenesByZoneOrDeviceId: ReadonlyMap<string, ReadonlyArray<Scene>> = new Ma
     ),
 );
 
+const queue = new ExecutionQueue(log);
 const mqttClient = new MqttClient(
     new LightingServiceMQTTHandler(
         {
             putLightingServiceByZone: Litecom.LightingServiceService.putLightingServiceByZone,
             putLightingServiceByZoneAndDevice: Litecom.LightingServiceService.putLightingServiceByZoneAndDevice,
         },
+        queue,
         log,
     ),
     new SceneServiceMQTTHandler(
@@ -31,6 +34,7 @@ const mqttClient = new MqttClient(
             putSceneServiceByZoneAndDevice: Litecom.SceneServiceService.putSceneServiceByZoneAndDevice,
         },
         scenesByZoneOrDeviceId,
+        queue,
         log,
     ),
     new CoverServiceMQTTHandler(
@@ -42,6 +46,7 @@ const mqttClient = new MqttClient(
             putSlatServiceByZone: Litecom.SlatsServiceService.putSlatServiceByZone,
             putSlatServiceByZoneAndDevice: Litecom.SlatsServiceService.putSlatServiceByZoneAndDevice,
         },
+        queue,
         log,
     ),
     config.LITECOM2MQTT_HOMEASSISTANT_RETAIN_ANNOUNCEMENTS,
