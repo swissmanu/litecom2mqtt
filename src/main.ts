@@ -3,9 +3,9 @@ import { HomeAssistantDevice } from './homeAssistant/devices/homeAssistantDevice
 import { LightingServiceMQTTHandler } from './homeAssistant/lightingServiceMqttHandler.js';
 import { HomeAssistantMqttClient } from './homeAssistant/mqttClient.js';
 import { SceneServiceMQTTHandler } from './homeAssistant/sceneServiceMqttHandler.js';
-import { createLitecomMqttMirror } from './litecom/createLitecomMqttMirror.js';
 import { Scene, idForZoneOrDevice, interrogateLitecomSystem } from './litecom/interrogateLitecomSystem.js';
 import * as Litecom from './litecom/restClient/index.js';
+import { StatePropagator } from './statePropagation/statePropagator.js';
 import { config } from './util/config.js';
 import { ExecutionQueue } from './util/executionQueue.js';
 import { log } from './util/logger.js';
@@ -57,7 +57,8 @@ const homeAssistantMqttClient = new HomeAssistantMqttClient(
 );
 await homeAssistantMqttClient.init(config);
 
-await createLitecomMqttMirror(mqttClient);
+const litecomMqtt = await connectLitecomMqtt(config, log);
+new StatePropagator(log, config, litecomMqtt, brokerMqttClient);
 
 for (const zone of [
     ...(config.LITECOM2MQTT_HOMEASSISTANT_ANNOUNCE_ZONES ? zones : []),
