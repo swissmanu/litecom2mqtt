@@ -111,8 +111,8 @@ export async function interrogateLitecomSystem(config: Config): Promise<LitecomS
     Litecom.OpenAPI.TOKEN = config.LITECOM2MQTT_LITECOM_CONSUMER_API_TOKEN;
 
     log.debug('Fetching zones from Litecom...');
-    // const systemZones = await throttled(() => Litecom.ZonesService.getZones());
-    const systemZones = [await Litecom.ZonesService.getZoneById('718a03b6-1f08-4a5e-aace-a4c5b26544ee')];
+    const systemZones = await throttled(() => Litecom.ZonesService.getZones());
+    // const systemZones = [await Litecom.ZonesService.getZoneById('718a03b6-1f08-4a5e-aace-a4c5b26544ee')];
     log.debug(`Fetched ${systemZones.length} zones from Litecom.`);
 
     for (const systemZone of systemZones) {

@@ -23,6 +23,7 @@ const Config = z.object({
     LITECOM2MQTT_LITECOM_QUERY_GROUPS: z.string().optional().transform(stringToBoolean),
     LITECOM2MQTT_LITECOM_QUERY_ROOMS: z.string().optional().transform(stringToBoolean),
     LITECOM2MQTT_LITECOM_QUERY_ZONES: z.string().optional().transform(stringToBoolean),
+    LITECOM2MQTT_LITECOM_PROPAGATE_DEVICE_STATE_TO_GROUPS: z.string().optional().transform(stringToBoolean),
     LITECOM2MQTT_HOMEASSISTANT_DISCOVERY_MQTT_TOPIC_PREFIX: z.string().default('homeassistant'),
     LITECOM2MQTT_HOMEASSISTANT_ANNOUNCE_DEVICES: z.string().optional().transform(stringToBoolean),
     LITECOM2MQTT_HOMEASSISTANT_ANNOUNCE_GROUPS: z.string().optional().transform(stringToBoolean),
