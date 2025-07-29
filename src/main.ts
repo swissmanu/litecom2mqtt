@@ -22,6 +22,7 @@ const scenesByZoneOrDeviceId: ReadonlyMap<string, ReadonlyArray<Scene>> = new Ma
 const queue = new ExecutionQueue(log);
 const brokerMqttClient = await connectMqttBroker(config, log);
 const homeAssistantMqttClient = new HomeAssistantMqttClient(
+    config,
     brokerMqttClient,
     new LightingServiceMQTTHandler(
         {
@@ -52,10 +53,8 @@ const homeAssistantMqttClient = new HomeAssistantMqttClient(
         queue,
         log,
     ),
-    config.LITECOM2MQTT_HOMEASSISTANT_RETAIN_ANNOUNCEMENTS,
     log,
 );
-await homeAssistantMqttClient.init(config);
 
 const litecomMqtt = await connectLitecomMqtt(config, log);
 new StatePropagator(log, config, litecomMqtt, brokerMqttClient);

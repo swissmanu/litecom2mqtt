@@ -13,15 +13,13 @@ import { SceneCommand, SceneServiceMQTTHandler } from './sceneServiceMqttHandler
 
 export class HomeAssistantMqttClient implements HomeAssistantDeviceAnnouncer {
     constructor(
+        private readonly config: Config,
         private readonly client: MqttClient,
         private readonly lightingHandler: LightingServiceMQTTHandler,
         private readonly sceneHandler: SceneServiceMQTTHandler,
         private readonly coverHandler: CoverServiceMQTTHandler,
-        private readonly retainAnnouncements: boolean,
         private readonly log: Logger,
-    ) {}
-
-    async init(config: Config): Promise<AsyncDisposable> {
+    ) {
         const decoder = new TextDecoder();
 
         // PREFIX/ZONE_ID/ZONE_ID/devices/DEVICE_ID/DATA_POINT_TYPE/COMMAND_TOPIC
@@ -106,10 +104,6 @@ export class HomeAssistantMqttClient implements HomeAssistantDeviceAnnouncer {
                 return;
             }
         });
-
-        return createAsyncDisposable(async () => {
-            await this.client?.end();
-        });
     }
 
     async publish(topic: string, payload: Buffer | string, options?: { retain?: boolean }): Promise<void> {
@@ -133,12 +127,17 @@ export class HomeAssistantMqttClient implements HomeAssistantDeviceAnnouncer {
     }
 
     async announce(discoveryTopic: string, announcement: HomeAssistantAnnouncement) {
-        this.log.debug(`Announce${this.retainAnnouncements ? ' retained ' : ' '}${discoveryTopic}`, {
-            discoveryTopic,
-            announcement,
-            retain: this.retainAnnouncements,
+        this.log.debug(
+            `Announce${this.config.LITECOM2MQTT_HOMEASSISTANT_RETAIN_ANNOUNCEMENTS ? ' retained ' : ' '}${discoveryTopic}`,
+            {
+                discoveryTopic,
+                announcement,
+                retain: this.config.LITECOM2MQTT_HOMEASSISTANT_RETAIN_ANNOUNCEMENTS,
+            },
+        );
+        await this.publish(discoveryTopic, JSON.stringify(announcement), {
+            retain: this.config.LITECOM2MQTT_HOMEASSISTANT_RETAIN_ANNOUNCEMENTS,
         });
-        await this.publish(discoveryTopic, JSON.stringify(announcement), { retain: this.retainAnnouncements });
     }
 
     async subscribeToHomeAssistantDeviceCommandTopics(device: HomeAssistantDevice) {
