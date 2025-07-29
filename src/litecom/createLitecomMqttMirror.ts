@@ -2,6 +2,7 @@ import { connectAsync } from 'mqtt';
 import { MqttClient } from '../homeAssistant/mqttClient.js';
 import { config } from '../util/config.js';
 import { log } from '../util/logger.js';
+
 export async function createLitecomMqttMirror(
     target: MqttClient,
     subscriptionTopic = 'zones/#',

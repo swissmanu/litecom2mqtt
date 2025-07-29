@@ -85,10 +85,10 @@ export async function interrogateLitecomSystem(config: Config): Promise<LitecomS
     }
 
     if (
-        !config.LITECOM2MQTT_HOMEASSISTANT_ANNOUNCE_ZONES &&
-        !config.LITECOM2MQTT_HOMEASSISTANT_ANNOUNCE_ROOMS &&
-        !config.LITECOM2MQTT_HOMEASSISTANT_ANNOUNCE_GROUPS &&
-        !config.LITECOM2MQTT_HOMEASSISTANT_ANNOUNCE_DEVICES
+        !config.LITECOM2MQTT_LITECOM_QUERY_ZONES &&
+        !config.LITECOM2MQTT_LITECOM_QUERY_ROOMS &&
+        !config.LITECOM2MQTT_LITECOM_QUERY_GROUPS &&
+        !config.LITECOM2MQTT_LITECOM_QUERY_DEVICES
     ) {
         log.warning('Interrogation for zones, rooms, groups, and devices disabled.');
         return { zones, rooms, groups, devices, zoneIdsByDeviceId, zoneById };
@@ -97,10 +97,10 @@ export async function interrogateLitecomSystem(config: Config): Promise<LitecomS
     log.debug(`Start interrogation of Litecom system on ${config.LITECOM2MQTT_LITECOM_HOST}...`);
     log.debug(
         `Interrogate: ${[
-            config.LITECOM2MQTT_HOMEASSISTANT_ANNOUNCE_ZONES && 'zones',
-            config.LITECOM2MQTT_HOMEASSISTANT_ANNOUNCE_ROOMS && 'rooms',
-            config.LITECOM2MQTT_HOMEASSISTANT_ANNOUNCE_GROUPS && 'groups',
-            config.LITECOM2MQTT_HOMEASSISTANT_ANNOUNCE_DEVICES && 'devices',
+            config.LITECOM2MQTT_LITECOM_QUERY_ZONES && 'zones',
+            config.LITECOM2MQTT_LITECOM_QUERY_ROOMS && 'rooms',
+            config.LITECOM2MQTT_LITECOM_QUERY_GROUPS && 'groups',
+            config.LITECOM2MQTT_LITECOM_QUERY_DEVICES && 'devices',
         ]
             .filter((x) => !!x)
             .join(', ')}`,
@@ -111,8 +111,8 @@ export async function interrogateLitecomSystem(config: Config): Promise<LitecomS
     Litecom.OpenAPI.TOKEN = config.LITECOM2MQTT_LITECOM_CONSUMER_API_TOKEN;
 
     log.debug('Fetching zones from Litecom...');
-    const systemZones = await throttled(() => Litecom.ZonesService.getZones());
-    // const systemZones = [await Litecom.ZonesService.getZoneById('8bfa53fa-8574-4239-88cf-5b18e5954d93')];
+    // const systemZones = await throttled(() => Litecom.ZonesService.getZones());
+    const systemZones = [await Litecom.ZonesService.getZoneById('718a03b6-1f08-4a5e-aace-a4c5b26544ee')];
     log.debug(`Fetched ${systemZones.length} zones from Litecom.`);
 
     for (const systemZone of systemZones) {
@@ -120,9 +120,9 @@ export async function interrogateLitecomSystem(config: Config): Promise<LitecomS
         zoneById.set(systemZone.id, { zone: systemZone, parentZoneId: parentZoneId });
 
         if (
-            (systemZone.level === Litecom.Zone.level.ZONE && config.LITECOM2MQTT_HOMEASSISTANT_ANNOUNCE_ZONES) ||
-            (systemZone.level === Litecom.Zone.level.ROOM && config.LITECOM2MQTT_HOMEASSISTANT_ANNOUNCE_ROOMS) ||
-            (systemZone.level === Litecom.Zone.level.GROUP && config.LITECOM2MQTT_HOMEASSISTANT_ANNOUNCE_GROUPS)
+            (systemZone.level === Litecom.Zone.level.ZONE && config.LITECOM2MQTT_LITECOM_QUERY_ZONES) ||
+            (systemZone.level === Litecom.Zone.level.ROOM && config.LITECOM2MQTT_LITECOM_QUERY_ROOMS) ||
+            (systemZone.level === Litecom.Zone.level.GROUP && config.LITECOM2MQTT_LITECOM_QUERY_GROUPS)
         ) {
             log.debug(`Fetching services for ${systemZone.level.toLowerCase()} "${systemZone.id}"...`);
             const systemZoneServices = await throttled(() => Litecom.ZonesService.getServicesByZone(systemZone.id));
@@ -145,7 +145,7 @@ export async function interrogateLitecomSystem(config: Config): Promise<LitecomS
                     break;
             }
 
-            if (config.LITECOM2MQTT_HOMEASSISTANT_ANNOUNCE_DEVICES) {
+            if (config.LITECOM2MQTT_LITECOM_QUERY_DEVICES) {
                 log.debug(`Fetching devices for ${systemZone.level.toLowerCase()} "${systemZone.id}"...`);
                 const systemDevices = await throttled(() => Litecom.DevicesService.getDevicesByZone(systemZone.id));
                 log.debug(`Fetched ${systemDevices.length} devices for "${systemZone.id}".`);

@@ -66,7 +66,7 @@ for (const zone of [
     await mqttClient.subscribeToHomeAssistantDeviceCommandTopics(homeAssistantDevice);
 }
 
-for (const device of devices) {
+for (const device of config.LITECOM2MQTT_HOMEASSISTANT_ANNOUNCE_DEVICES ? devices : []) {
     const zoneIds = zoneIdsByDeviceId.get(device.device.id);
     if (zoneIds && zoneIds.length > 0) {
         const zone = zoneById.get(zoneIds[0]);

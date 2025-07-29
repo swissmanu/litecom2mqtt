@@ -31,6 +31,10 @@ Pass configuration to the litecom2mqtt container using [Dockers `-e` parameter](
 | `LITECOM2MQTT_LITECOM_CONSUMER_NAME`                     |                                                                                                                                               |
 | `LITECOM2MQTT_LITECOM_CONSUMER_API_KEY`                  |                                                                                                                                               |
 | `LITECOM2MQTT_LITECOM_STATE_MQTT_TOPIC_PREFIX`           | Optional. The topic prefix used by your Litecom CCD to publish state information.<br />Default value: `litecom`                               |
+| `LITECOM2MQTT_LITECOM_QUERY_DEVICES`                     | Optional. If `true`, devices and their services (lighting, blinds, etc.) are querried from the Litecom CCD.<br />Default value: `false`       |
+| `LITECOM2MQTT_LITECOM_QUERY_GROUPS`                      | Optional. If `true`, groups and their services are querried from the Litecom CCD.<br />Default value: `false`                                 |
+| `LITECOM2MQTT_LITECOM_QUERY_ROOMS`                       | Optional. If `true`, rooms and their services are querried from the Litecom CCD.<br />Default value: `false`                                  |
+| `LITECOM2MQTT_LITECOM_QUERY_ZONES`                       | Optional. If `true`, zones and their services are querried from the Litecom CCD.<br />Default value: `false`                                  |
 | `LITECOM2MQTT_HOMEASSISTANT_DISCOVERY_MQTT_TOPIC_PREFIX` | Optional. `litecom2mqtt` will announce devices, zones, etc. to Home Assistant within this topic prefix.<br />Default value: `homeassistant`   |
 | `LITECOM2MQTT_HOMEASSISTANT_ANNOUNCE_DEVICES`            | Optional. If `true`, Litecom devices and their services (lighting, blinds, etc.) are announced to Home Assistant.<br />Default value: `false` |
 | `LITECOM2MQTT_HOMEASSISTANT_ANNOUNCE_GROUPS`             | Optional. If `true`, Litecom groups and their services are announced to Home Assistant.<br />Default value: `false`                           |
@@ -40,7 +44,7 @@ Pass configuration to the litecom2mqtt container using [Dockers `-e` parameter](
 
 ## System Details
 
-![Interactions between litecom2mqtt, Litecom CCD, a MQTT broker, and Home Assistant.](./docs/system.drawio.svg)
+![Interactions between litecom2mqtt, Litecom CCD, an MQTT broker, and Home Assistant.](./docs/system.drawio.svg)
 
 ## Caveats
 
