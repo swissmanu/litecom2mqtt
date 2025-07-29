@@ -1,7 +1,7 @@
-import { MqttClient as Client, connectAsync } from 'mqtt';
+import { MqttClient } from 'mqtt';
 import { Config } from '../util/config.js';
 import { createAsyncDisposable } from '../util/createDisposable.js';
-import { Logger, log } from '../util/logger.js';
+import { log, Logger } from '../util/logger.js';
 import { CoverCommand, CoverServiceMQTTHandler } from './coverServiceMqttHandler.js';
 import {
     HomeAssistantAnnouncement,
@@ -11,10 +11,9 @@ import {
 import { LightingCommand, LightingServiceMQTTHandler } from './lightingServiceMqttHandler.js';
 import { SceneCommand, SceneServiceMQTTHandler } from './sceneServiceMqttHandler.js';
 
-export class MqttClient implements HomeAssistantDeviceAnnouncer {
-    private client: Client | undefined = undefined;
-
+export class HomeAssistantMqttClient implements HomeAssistantDeviceAnnouncer {
     constructor(
+        private readonly client: MqttClient,
         private readonly lightingHandler: LightingServiceMQTTHandler,
         private readonly sceneHandler: SceneServiceMQTTHandler,
         private readonly coverHandler: CoverServiceMQTTHandler,
@@ -30,15 +29,6 @@ export class MqttClient implements HomeAssistantDeviceAnnouncer {
 
         // PREFIX/ZONE_ID/DATA_POINT_TYPE/COMMAND_TOPIC
         const zoneTopicRegex = new RegExp(`^${config.LITECOM2MQTT_MQTT_TOPIC_PREFIX}/(.*)/(.*)/(.*)$`);
-
-        this.client = await connectAsync({
-            protocol: config.LITECOM2MQTT_MQTT_BROKER_PROTOCOL,
-            host: config.LITECOM2MQTT_MQTT_BROKER_HOST,
-            port: config.LITECOM2MQTT_MQTT_BROKER_PORT,
-        });
-        log.info(
-            `Connected to broker ${config.LITECOM2MQTT_MQTT_BROKER_PROTOCOL}://${config.LITECOM2MQTT_LITECOM_HOST}:${config.LITECOM2MQTT_MQTT_BROKER_PORT}`,
-        );
 
         this.client.on('message', (topic: string, payloadBuffer: Buffer) => {
             const match = topic.match(deviceTopicRegex);

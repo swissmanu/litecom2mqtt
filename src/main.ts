@@ -1,7 +1,7 @@
 import { CoverServiceMQTTHandler } from './homeAssistant/coverServiceMqttHandler.js';
 import { HomeAssistantDevice } from './homeAssistant/devices/homeAssistantDevice.js';
 import { LightingServiceMQTTHandler } from './homeAssistant/lightingServiceMqttHandler.js';
-import { MqttClient } from './homeAssistant/mqttClient.js';
+import { HomeAssistantMqttClient } from './homeAssistant/mqttClient.js';
 import { SceneServiceMQTTHandler } from './homeAssistant/sceneServiceMqttHandler.js';
 import { createLitecomMqttMirror } from './litecom/createLitecomMqttMirror.js';
 import { Scene, idForZoneOrDevice, interrogateLitecomSystem } from './litecom/interrogateLitecomSystem.js';
@@ -9,6 +9,7 @@ import * as Litecom from './litecom/restClient/index.js';
 import { config } from './util/config.js';
 import { ExecutionQueue } from './util/executionQueue.js';
 import { log } from './util/logger.js';
+import { connectLitecomMqtt, connectMqttBroker } from './util/mqttClientFactories.js';
 
 const { zones, groups, rooms, devices, zoneIdsByDeviceId, zoneById } = await interrogateLitecomSystem(config);
 const scenesByZoneOrDeviceId: ReadonlyMap<string, ReadonlyArray<Scene>> = new Map(
@@ -19,7 +20,9 @@ const scenesByZoneOrDeviceId: ReadonlyMap<string, ReadonlyArray<Scene>> = new Ma
 );
 
 const queue = new ExecutionQueue(log);
-const mqttClient = new MqttClient(
+const brokerMqttClient = await connectMqttBroker(config, log);
+const homeAssistantMqttClient = new HomeAssistantMqttClient(
+    brokerMqttClient,
     new LightingServiceMQTTHandler(
         {
             putLightingServiceByZone: Litecom.LightingServiceService.putLightingServiceByZone,
@@ -52,7 +55,7 @@ const mqttClient = new MqttClient(
     config.LITECOM2MQTT_HOMEASSISTANT_RETAIN_ANNOUNCEMENTS,
     log,
 );
-await mqttClient.init(config);
+await homeAssistantMqttClient.init(config);
 
 await createLitecomMqttMirror(mqttClient);
 
@@ -62,8 +65,8 @@ for (const zone of [
     ...(config.LITECOM2MQTT_HOMEASSISTANT_ANNOUNCE_ROOMS ? rooms : []),
 ]) {
     const homeAssistantDevice = HomeAssistantDevice.fromLitecomZone(zone, zoneById, config, log);
-    await homeAssistantDevice.announceUsing(mqttClient);
-    await mqttClient.subscribeToHomeAssistantDeviceCommandTopics(homeAssistantDevice);
+    await homeAssistantDevice.announceUsing(homeAssistantMqttClient);
+    await homeAssistantMqttClient.subscribeToHomeAssistantDeviceCommandTopics(homeAssistantDevice);
 }
 
 for (const device of config.LITECOM2MQTT_HOMEASSISTANT_ANNOUNCE_DEVICES ? devices : []) {
@@ -72,8 +75,8 @@ for (const device of config.LITECOM2MQTT_HOMEASSISTANT_ANNOUNCE_DEVICES ? device
         const zone = zoneById.get(zoneIds[0]);
         if (zone) {
             const homeAssistantDevice = HomeAssistantDevice.fromLitecomDevice(device, zone, zoneById, config, log);
-            await homeAssistantDevice.announceUsing(mqttClient);
-            await mqttClient.subscribeToHomeAssistantDeviceCommandTopics(homeAssistantDevice);
+            await homeAssistantDevice.announceUsing(homeAssistantMqttClient);
+            await homeAssistantMqttClient.subscribeToHomeAssistantDeviceCommandTopics(homeAssistantDevice);
         }
     } else {
         log.warning(`No zone identifiers found for device "${device.device.name}"`);
