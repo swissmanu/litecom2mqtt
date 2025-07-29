@@ -1,18 +1,22 @@
 import { MqttClient, OnMessageCallback } from 'mqtt';
-import { LitecomStateMqttTopicFactory } from '../litecom/stateMqttTopicFactory.js';
+import { isDeviceStateTopicInformation, LitecomStateMqttTopicFactory } from '../litecom/stateMqttTopicFactory.js';
 import { Config } from '../util/config.js';
 import { Logger } from '../util/logger.js';
+import { DeviceStatePropagationStrategy } from './deviceStatePropagationStrategy/deviceStatePropagationStrategy.js';
 
-// interface StateMqttHandler {}
-
+/**
+ * The {@link StatePropagator} mirrors zone and device states from Litecoms MQTT broker to another MQTT browser.
+ *
+ * Additionally, a {@link DeviceStatePropagationStrategy} can be passed. This strategy allows to compensate for lacking
+ * functionality in Litecoms own implementation. See {@link DefaultDeviceStatePropagationStrategy} for more information.
+ */
 export class StatePropagator implements AsyncDisposable {
-    // private handlers: Map<string, StateMqttHandler> = new Map();
-
     constructor(
         private log: Logger,
         private config: Config,
         private litecomMqttClient: MqttClient,
         private brokerMqttClient: MqttClient,
+        private deviceStatePropagationStrategy: DeviceStatePropagationStrategy,
     ) {
         this.litecomMqttClient.on('message', this.onMessage);
         this.litecomMqttClient.subscribeAsync('zones/#');
@@ -21,39 +25,21 @@ export class StatePropagator implements AsyncDisposable {
     private onMessage: OnMessageCallback = (topic: string, payload: Buffer) => {
         const zoneOrDeviceState = LitecomStateMqttTopicFactory.matchTopic(topic);
         if (zoneOrDeviceState) {
-            // Just replicate mirror for now
-            this.brokerMqttClient?.publish(
-                `${this.config.LITECOM2MQTT_LITECOM_STATE_MQTT_TOPIC_PREFIX}/${topic}`,
-                payload,
-            );
-            this.log.info(`Mirror ${topic}`);
+            this.forwardMessage(topic, payload);
+
+            if (isDeviceStateTopicInformation(zoneOrDeviceState)) {
+                this.deviceStatePropagationStrategy.propagateDeviceState(zoneOrDeviceState, payload);
+            }
         }
     };
 
-    // registerHandlerFor(dataPointType: 'lighting', zone: Litecom.Zone, device?: Litecom.Device) {
-    //     const key = StatePropagator.getHandlerKey(dataPointType, zone, device);
-    //     const handler = StatePropagator.createHandler(dataPointType, zone, device);
-
-    //     if (this.handlers.has(key)) {
-    //         this.log.warning(`State Handler with key "${key}" was already registered before.`);
-    //         return;
-    //     }
-
-    //     this.handlers.set(key, handler);
-    // }
-
-    // private static createHandler(
-    //     dataPointType: 'lighting',
-    //     zone: Litecom.Zone,
-    //     device?: Litecom.Device,
-    // ): StateMqttHandler {
-    //     // TODO
-    //     return {};
-    // }
-
-    // private static getHandlerKey(dataPointType: 'lighting', zone: Litecom.Zone, device?: Litecom.Device): string {
-    //     return `${dataPointType}-${zone.id}${device ? device.id : ''}`;
-    // }
+    private async forwardMessage(topic: string, payload: Buffer): Promise<void> {
+        await this.brokerMqttClient.publishAsync(
+            `${this.config.LITECOM2MQTT_LITECOM_STATE_MQTT_TOPIC_PREFIX}/${topic}`,
+            payload,
+        );
+        this.log.info(`Mirror ${topic}`);
+    }
 
     async [Symbol.asyncDispose](): Promise<void> {
         this.litecomMqttClient.off('message', this.onMessage);

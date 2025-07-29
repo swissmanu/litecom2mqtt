@@ -5,6 +5,8 @@ import { HomeAssistantMqttClient } from './homeAssistant/mqttClient.js';
 import { SceneServiceMQTTHandler } from './homeAssistant/sceneServiceMqttHandler.js';
 import { Scene, idForZoneOrDevice, interrogateLitecomSystem } from './litecom/interrogateLitecomSystem.js';
 import * as Litecom from './litecom/restClient/index.js';
+import { DefaultDeviceStatePropagationStrategy } from './statePropagation/deviceStatePropagationStrategy/defaultDeviceStatePropagationStrategy.js';
+import { NoopDeviceStatePropagationStrategy } from './statePropagation/deviceStatePropagationStrategy/noopDeviceStatePropagationStrategy.js';
 import { StatePropagator } from './statePropagation/statePropagator.js';
 import { config } from './util/config.js';
 import { ExecutionQueue } from './util/executionQueue.js';
@@ -56,8 +58,15 @@ const homeAssistantMqttClient = new HomeAssistantMqttClient(
     log,
 );
 
-const litecomMqtt = await connectLitecomMqtt(config, log);
-new StatePropagator(log, config, litecomMqtt, brokerMqttClient);
+new StatePropagator(
+    log,
+    config,
+    await connectLitecomMqtt(config, log),
+    brokerMqttClient,
+    config.LITECOM2MQTT_LITECOM_PROPAGATE_DEVICE_STATE_TO_GROUPS
+        ? new DefaultDeviceStatePropagationStrategy(log, config, brokerMqttClient)
+        : new NoopDeviceStatePropagationStrategy(),
+);
 
 for (const zone of [
     ...(config.LITECOM2MQTT_HOMEASSISTANT_ANNOUNCE_ZONES ? zones : []),

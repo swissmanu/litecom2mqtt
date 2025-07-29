@@ -11,7 +11,7 @@ type ZoneStateTopic<
     Prefix extends string | null = null,
 > = `${Prefix extends string ? `${Prefix}/` : ``}zones/${string}/services/${Service}/${Value}`;
 
-type DeviceStateTopicInformation = {
+export type DeviceStateTopicInformation = {
     zoneId: string;
     deviceId: string;
     service: string;
@@ -36,7 +36,7 @@ export class LitecomStateMqttTopicFactory {
 
     constructor(
         private readonly zoneId: string,
-        private readonly deviceId: string | undefined,
+        private readonly deviceId?: string | undefined,
     ) {}
 
     private prefix(): typeof this.deviceId extends string
@@ -76,7 +76,7 @@ export class LitecomStatePrefixedMqttTopicFactory {
     constructor(
         private readonly config: Config,
         private readonly zoneId: string,
-        private readonly deviceId: string | undefined,
+        private readonly deviceId?: string | undefined,
     ) {}
 
     private prefix(): typeof this.deviceId extends string
