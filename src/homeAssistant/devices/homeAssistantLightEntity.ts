@@ -1,4 +1,4 @@
-import { LitecomStateMqttTopicFactory } from '../../litecom/stateMqttTopicFactory.js';
+import { LitecomStatePrefixedMqttTopicFactory } from '../../litecom/stateMqttTopicFactory.js';
 import { LightingServiceMQTTHandler } from '../lightingServiceMqttHandler.js';
 import { DataPointType, HomeAssistantEntity, HomeAssistantEntityType } from './homeAssistantEntity.js';
 
@@ -19,7 +19,7 @@ export class HomeAssistantLightEntity extends HomeAssistantEntity {
     }
 
     override get homeAssistantEntityConfig(): Record<string, string | number | boolean> {
-        const stateTopicFactory = new LitecomStateMqttTopicFactory(this.config, this.zone.id, this.device?.id);
+        const stateTopicFactory = new LitecomStatePrefixedMqttTopicFactory(this.config, this.zone.id, this.device?.id);
 
         return {
             name: 'Lighting',
