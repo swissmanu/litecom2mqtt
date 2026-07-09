@@ -14,7 +14,7 @@ import { SceneCommand, SceneServiceMQTTHandler } from './sceneServiceMqttHandler
 export class HomeAssistantMqttClient implements HomeAssistantDeviceAnnouncer {
     constructor(
         private readonly config: Config,
-        private readonly client: MqttClient,
+        public readonly client: MqttClient,
         private readonly lightingHandler: LightingServiceMQTTHandler,
         private readonly sceneHandler: SceneServiceMQTTHandler,
         private readonly coverHandler: CoverServiceMQTTHandler,

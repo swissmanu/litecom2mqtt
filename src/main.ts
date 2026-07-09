@@ -1,3 +1,4 @@
+import HomeAssistantAnnouncer from './homeAssistant/announcer.js';
 import { CoverServiceMQTTHandler } from './homeAssistant/coverServiceMqttHandler.js';
 import { HomeAssistantDevice } from './homeAssistant/devices/homeAssistantDevice.js';
 import { LightingServiceMQTTHandler } from './homeAssistant/lightingServiceMqttHandler.js';
@@ -68,13 +69,15 @@ new StatePropagator(
         : new NoopDeviceStatePropagationStrategy(),
 );
 
+const homeAssistantDevices: Map<string, HomeAssistantDevice> = new Map();
+
 for (const zone of [
     ...(config.LITECOM2MQTT_HOMEASSISTANT_ANNOUNCE_ZONES ? zones : []),
     ...(config.LITECOM2MQTT_HOMEASSISTANT_ANNOUNCE_GROUPS ? groups : []),
     ...(config.LITECOM2MQTT_HOMEASSISTANT_ANNOUNCE_ROOMS ? rooms : []),
 ]) {
     const homeAssistantDevice = HomeAssistantDevice.fromLitecomZone(zone, zoneById, config, log);
-    await homeAssistantDevice.announceUsing(homeAssistantMqttClient);
+    homeAssistantDevices.set(homeAssistantDevice.id, homeAssistantDevice);
     await homeAssistantMqttClient.subscribeToHomeAssistantDeviceCommandTopics(homeAssistantDevice);
 }
 
@@ -84,10 +87,13 @@ for (const device of config.LITECOM2MQTT_HOMEASSISTANT_ANNOUNCE_DEVICES ? device
         const zone = zoneById.get(zoneIds[0]);
         if (zone) {
             const homeAssistantDevice = HomeAssistantDevice.fromLitecomDevice(device, zone, zoneById, config, log);
-            await homeAssistantDevice.announceUsing(homeAssistantMqttClient);
+            homeAssistantDevices.set(homeAssistantDevice.id, homeAssistantDevice);
             await homeAssistantMqttClient.subscribeToHomeAssistantDeviceCommandTopics(homeAssistantDevice);
         }
     } else {
         log.warning(`No zone identifiers found for device "${device.device.name}"`);
     }
 }
+
+const announcer = new HomeAssistantAnnouncer(homeAssistantMqttClient, homeAssistantDevices, log);
+announcer.announceHomeAssistantDevices();
